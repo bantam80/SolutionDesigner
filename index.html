@@ -12,24 +12,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style type="text/tailwindcss">
-        body{font-family:'Inter',sans-serif;background-color:#f8fafc}.section-card{@apply bg-white rounded-xl border border-slate-200 shadow-sm p-8 mb-8 transition-all duration-200}.section-card:hover{@apply shadow-md border-blue-200}.step-header{@apply mb-6 pb-4 border-b-2 border-slate-100 flex items-end justify-between}.step-title{@apply text-2xl font-extrabold text-slate-800 tracking-tight}.step-subtitle{@apply text-sm text-slate-400 font-medium uppercase tracking-wider mb-1}.input-group{@apply relative bg-slate-50 rounded-lg p-4 border border-slate-200 transition-colors focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500}.label-main{@apply block text-sm font-semibold text-slate-700 mb-1}.label-sub{@apply block text-xs text-slate-500 mb-3}.input-clean{@apply w-24 text-right font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}.input-col{@apply w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-2 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}.price-tag{@apply text-xs font-medium text-slate-500 mt-1 block text-right}.toggle-checkbox:checked{@apply right-0 border-green-400}.toggle-checkbox:checked+.toggle-label{@apply bg-green-400}.summary-row{@apply flex justify-between text-sm py-2 border-b border-slate-700/50 last:border-0}.summary-label{@apply text-slate-400}.summary-val{@apply font-medium text-slate-200}.acc-panel{@apply mt-3 pt-3 border-t border-slate-100 bg-slate-50/50 rounded-b-lg px-1}.acc-label{@apply text-[10px] font-bold text-slate-400 mb-1 block uppercase tracking-wide text-center}.acc-input{@apply w-full text-xs border-slate-200 rounded p-1 text-center font-semibold focus:ring-1 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400}
+        body{font-family:'Inter',sans-serif;background-color:#f8fafc}
+        .section-card{@apply bg-white rounded-xl border border-slate-200 shadow-sm p-8 mb-8 transition-all duration-200}
+        .section-card:hover{@apply shadow-md border-blue-200}
+        .step-header{@apply mb-6 pb-4 border-b-2 border-slate-100 flex items-end justify-between}
+        .step-title{@apply text-2xl font-extrabold text-slate-800 tracking-tight}
+        .step-subtitle{@apply text-sm text-slate-400 font-medium uppercase tracking-wider mb-1}
+        .input-group{@apply relative bg-slate-50 rounded-lg p-4 border border-slate-200 transition-colors focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500}
+        .label-main{@apply block text-sm font-semibold text-slate-700 mb-1}
+        .label-sub{@apply block text-xs text-slate-500 mb-3}
+        .input-clean{@apply w-24 text-right font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}
+        .input-col{@apply w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-2 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}
+        .price-tag{@apply text-xs font-medium text-slate-500 mt-1 block text-right}
+        .summary-row{@apply flex justify-between text-sm py-2 border-b border-slate-700/50 last:border-0}
+        .summary-label{@apply text-slate-400}
+        .summary-val{@apply font-medium text-slate-200}
+        .acc-panel{@apply mt-3 pt-3 border-t border-slate-100 bg-slate-50/50 rounded-b-lg px-1}
+        .acc-label{@apply text-[10px] font-bold text-slate-400 mb-1 block uppercase tracking-wide text-center}
+        .acc-input{@apply w-full text-xs border-slate-200 rounded p-1 text-center font-semibold focus:ring-1 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400}
         
+        /* PDF TEMPLATE STYLES (Hidden) */
+        .pdf-container { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
+        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .pdf-title { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .pdf-info { text-align: right; font-size: 14px; color: #777; }
+        .pdf-section { font-size: 16px; font-weight: bold; margin: 25px 0 10px; color: #444; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .pdf-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .pdf-th { background: #f8f9fa; color: #555; text-align: left; padding: 8px; border-bottom: 2px solid #ddd; font-weight: 600; }
+        .pdf-td { padding: 8px; border-bottom: 1px solid #eee; }
+        .pdf-total-row td { font-weight: bold; background-color: #fdfdfd; border-top: 2px solid #ddd; color: #000; padding: 10px; }
+        .badge-inc { background: #e6f4ea; color: #1e7e34; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; }
+
         /* OVERLAY LOADER */
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; text-align: center; padding-top: 250px; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 15px; }
-        #loaderText { font-size: 18px; color: #333; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="spinner"></div>
-    <div id="loaderText">Initializing...</div>
-    <div id="loaderSubText" class="text-sm text-gray-500 mt-2">Loading Live Inventory...</div>
+    <div class="text-xl font-bold text-slate-700">Loading Inventory...</div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 min-h-screen text-slate-600">
-    <div class="relative lg:col-span-8 lg:p-12 p-6 xl:col-span-9" id="quoteContainer">
+    <div class="relative lg:col-span-8 lg:p-12 p-6 xl:col-span-9" id="formContainer">
         <header class="flex justify-between border-slate-200 border-b items-start max-w-4xl mb-6 pb-6">
             <div>
                 <h1 class="font-extrabold text-4xl text-slate-900 tracking-tight">Solution Designer</h1>
@@ -48,15 +75,15 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between input-group">
                         <div class="pr-4"><label class="label-main">Standard Users</label><span class="label-sub">Common areas, lobby phones.</span></div>
-                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean" type="number" id="standardUsers" placeholder="0" min="0"><span class="price-tag" id="price_stdUser">...</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean license-trigger" type="number" id="standardUsers" placeholder="0" min="0"><span class="price-tag" id="price_stdUser">...</span></div>
                     </div>
                     <div class="flex items-center justify-between input-group">
                         <div class="pr-4"><label class="label-main">Advanced Users</label><span class="label-sub">Office staff, sales, remote.</span></div>
-                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean" type="number" id="advancedUsers" placeholder="0" min="0"><span class="price-tag" id="price_advUser">...</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean license-trigger" type="number" id="advancedUsers" placeholder="0" min="0"><span class="price-tag" id="price_advUser">...</span></div>
                     </div>
                     <div class="flex items-center justify-between input-group border-l-4 border-l-indigo-500">
                         <div class="pr-4"><label class="label-main text-indigo-900">Contact Center Agents</label><span class="label-sub text-indigo-700/70">Queues & Analytics.</span></div>
-                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean border-indigo-200" type="number" id="ccAgents" placeholder="0" min="0"><span class="price-tag text-indigo-600" id="price_ccAgent">...</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean license-trigger border-indigo-200" type="number" id="ccAgents" placeholder="0" min="0"><span class="price-tag text-indigo-600" id="price_ccAgent">...</span></div>
                     </div>
                 </div>
             </div>
@@ -68,26 +95,25 @@
                     <div class="border rounded-lg p-4 bg-slate-50">
                         <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-400">Local DIDs</h3>
                         <div class="space-y-3">
-                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20" type="number" id="portLocal" placeholder="Qty"></div>
-                            <div class="flex justify-between items-center"><label class="text-sm">New ($1)</label><input class="calc-trigger input-clean w-20" type="number" id="newLocal" placeholder="Qty"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20" type="number" id="portLocal" placeholder="Qty" min="0"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">New ($1)</label><input class="calc-trigger input-clean w-20" type="number" id="newLocal" placeholder="Qty" min="0"></div>
                         </div>
                     </div>
                     <div class="border rounded-lg p-4 bg-slate-50">
                         <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-400">Toll-Free</h3>
                         <div class="space-y-3">
-                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20" type="number" id="portTF" placeholder="Qty"></div>
-                            <div class="flex justify-between items-center"><label class="text-sm">New ($1)</label><input class="calc-trigger input-clean w-20" type="number" id="newTF" placeholder="Qty"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20 tf-trigger" type="number" id="portTF" placeholder="Qty" min="0"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">New ($2)</label><input class="calc-trigger input-clean w-20 tf-trigger" type="number" id="newTF" placeholder="Qty" min="0"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between border-l-4 border-blue-500 bg-blue-50 p-4 rounded mb-6">
+                <div id="tfMinutesRow" class="hidden flex items-center justify-between border-l-4 border-blue-500 bg-blue-50 p-4 rounded mb-6">
                     <div><label class="font-bold text-sm text-blue-900">Est. Monthly TF Minutes</label></div>
                     <div class="flex flex-col items-end">
-                         <input class="calc-trigger input-clean w-24 border-blue-200" type="number" id="tfMinutes" placeholder="0">
+                         <input class="calc-trigger input-clean w-24 border-blue-200" type="number" id="tfMinutes" placeholder="0" min="0">
                          <span class="text-[10px] text-blue-500 font-bold mt-1">$15/500min bundle</span>
                     </div>
-                    <div id="tfCallout" class="hidden ml-2 text-xs text-blue-600 font-bold">Bundle Applied</div>
                 </div>
 
                 <div class="border rounded-lg p-4 bg-slate-50">
@@ -102,7 +128,7 @@
                     <div class="hidden mt-4 pt-4 border-t border-slate-200" id="sipDetails">
                         <div class="flex justify-between items-center">
                             <label class="text-sm">Call Paths (Channels)</label>
-                            <input class="input-clean calc-trigger" type="number" id="sipChannels" placeholder="0">
+                            <input class="input-clean calc-trigger" type="number" id="sipChannels" placeholder="0" min="0">
                         </div>
                     </div>
                 </div>
@@ -120,36 +146,36 @@
                     <div class="flex flex-col">
                         <label class="font-bold text-sm text-center mb-1">Basic Phone</label>
                         <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwBasic">...</span>
-                        <input class="calc-trigger input-col parent-hw" type="number" id="hwBasic" placeholder="0" data-type="basic">
+                        <input class="calc-trigger input-col parent-hw phone-unit" type="number" id="hwBasic" placeholder="0" min="0">
                         <div class="acc-panel">
-                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_basic" placeholder="0" data-parent="hwBasic"></div>
-                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_basic" placeholder="0" data-parent="hwBasic"></div>
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_basic" placeholder="0" min="0" data-parent="hwBasic"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_basic" placeholder="0" min="0" data-parent="hwBasic"></div>
                         </div>
                     </div>
                     <div class="flex flex-col">
                         <label class="font-bold text-sm text-center mb-1">Office Phone</label>
                         <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwOffice">...</span>
-                        <input class="calc-trigger input-col parent-hw" type="number" id="hwOffice" placeholder="0" data-type="office">
+                        <input class="calc-trigger input-col parent-hw phone-unit" type="number" id="hwOffice" placeholder="0" min="0">
                         <div class="acc-panel">
-                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_office" placeholder="0" data-parent="hwOffice"></div>
-                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_office" placeholder="0" data-parent="hwOffice"></div>
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_office" placeholder="0" min="0" data-parent="hwOffice"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_office" placeholder="0" min="0" data-parent="hwOffice"></div>
                         </div>
                     </div>
                     <div class="flex flex-col">
                         <label class="font-bold text-sm text-center mb-1">Exec Phone</label>
                         <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwExec">...</span>
-                        <input class="calc-trigger input-col parent-hw" type="number" id="hwExec" placeholder="0" data-type="exec">
+                        <input class="calc-trigger input-col parent-hw phone-unit" type="number" id="hwExec" placeholder="0" min="0">
                         <div class="acc-panel">
-                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_exec" placeholder="0" data-parent="hwExec"></div>
-                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_exec" placeholder="0" data-parent="hwExec"></div>
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input acc-validate" type="number" id="mount_exec" placeholder="0" min="0" data-parent="hwExec"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input acc-validate psu-unit" type="number" id="psu_exec" placeholder="0" min="0" data-parent="hwExec"></div>
                         </div>
                     </div>
                     <div class="flex flex-col">
                         <label class="font-bold text-sm text-center mb-1">Conf Phone</label>
                         <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwConf">...</span>
-                        <input class="calc-trigger input-col" type="number" id="hwConf" placeholder="0">
+                        <input class="calc-trigger input-col phone-unit" type="number" id="hwConf" placeholder="0" min="0">
                         <div class="acc-panel">
-                            <div class="mb-2"><span class="acc-label">Mics</span><input class="calc-trigger acc-input" type="number" id="hwConfMics" placeholder="0"></div>
+                            <div class="mb-2"><span class="acc-label">Mics</span><input class="calc-trigger acc-input" type="number" id="hwConfMics" placeholder="0" min="0"></div>
                         </div>
                     </div>
                 </div>
@@ -157,23 +183,19 @@
                 <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-100">
                     <div>
                         <label class="label-main">Cordless Handsets</label>
-                        <span class="label-sub">Auto-calculates Base Kits (1 per 10).</span>
-                        <div class="flex flex-col">
-                             <input class="calc-trigger input-clean w-full" type="number" id="hwCordless" placeholder="Qty">
-                             <span class="text-[10px] font-bold text-purple-600 mt-1 hidden" id="cordlessInfo">Base Stations Included</span>
-                        </div>
+                        <span class="label-sub">Auto-calculates Base Kits.</span>
+                        <input class="calc-trigger input-clean w-full phone-unit" type="number" id="hwCordless" placeholder="Qty" min="0">
                     </div>
                     <div>
                         <label class="label-main">Sidecars</label>
                         <span class="label-sub">Requires Power Supply (Auto-added).</span>
-                        <input class="calc-trigger input-clean w-full" type="number" id="sidecars" placeholder="Qty">
-                        <span class="text-[10px] font-bold text-orange-600 mt-1 hidden" id="sidecarPSUInfo">+PSUs Added</span>
+                        <input class="calc-trigger input-clean w-full" type="number" id="sidecars" placeholder="Qty" min="0">
                     </div>
                 </div>
                 
-                <div class="mt-4 flex justify-between items-center border-t pt-4">
+                <div class="mt-4 border-t pt-4">
                      <label class="label-main">Headsets</label>
-                     <input class="calc-trigger input-clean" type="number" id="hwHeadsets" placeholder="Qty">
+                     <input class="calc-trigger input-clean" type="number" id="hwHeadsets" placeholder="Qty" min="0">
                 </div>
             </div>
 
@@ -182,12 +204,11 @@
                  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                      <div class="border rounded-lg p-4 bg-emerald-50 border-emerald-100">
                          <div class="flex items-center justify-between mb-2"><label class="font-bold text-sm text-emerald-800">E-Fax (Webfax)</label><span class="text-xs font-bold text-emerald-600" id="price_webfax">...</span></div>
-                         <input class="calc-trigger input-clean w-full border-emerald-200" type="number" id="efaxQty" placeholder="Qty">
+                         <input class="calc-trigger input-clean w-full border-emerald-200 license-trigger" type="number" id="efaxQty" placeholder="Qty" min="0">
                      </div>
                      <div class="border rounded-lg p-4 bg-red-50 border-red-100">
-                         <div class="flex items-center justify-between mb-2"><label class="font-bold text-sm text-red-800">Physical Fax (Analog)</label><span class="text-xs font-bold text-red-600" id="price_pots">...</span></div>
-                         <input class="calc-trigger input-clean w-full border-red-200" type="number" id="physicalFaxQty" placeholder="Qty">
-                         <p class="mt-2 text-[10px] text-center text-red-600">Includes 1 ATA per Line</p>
+                         <div class="flex items-center justify-between mb-2"><label class="font-bold text-sm text-red-800">POTS Replacement</label><span class="text-xs font-bold text-red-600" id="price_pots">...</span></div>
+                         <input class="calc-trigger input-clean w-full border-red-200 license-trigger" type="number" id="physicalFaxQty" placeholder="Qty" min="0">
                      </div>
                  </div>
                  
@@ -196,13 +217,8 @@
                          <label class="font-bold text-sm text-amber-800">Paging/Analog Extensions</label>
                          <span class="block text-xs text-amber-600">Requires Site Survey</span>
                      </div>
-                     <input class="calc-trigger input-clean border-amber-200" type="number" id="pagingQty" placeholder="Qty">
+                     <input class="calc-trigger input-clean border-amber-200 license-trigger" type="number" id="pagingQty" placeholder="Qty" min="0">
                  </div>
-            </div>
-            
-            <div class="flex items-center justify-between p-4 border rounded-lg">
-                <label class="font-bold text-sm text-slate-700">Missing Floorplan?</label>
-                <input class="calc-trigger w-5 h-5" type="checkbox" id="fpNo">
             </div>
 
         </div>
@@ -226,7 +242,6 @@
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Deployment</span>
                     <span class="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-full" id="totalDeviceCount">0 Devices</span>
                 </div>
-                <div id="deviceBreakdown" class="text-xs text-slate-400 mb-2"></div>
                 
                 <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-700/50">
                     <label class="flex items-center space-x-2 cursor-pointer">
@@ -236,7 +251,7 @@
                     <span class="text-[10px] font-bold text-slate-500" id="installStatus">OPTIONAL</span>
                 </div>
                 <div id="deployMsg" class="text-[10px] text-right text-slate-500 mt-1"></div>
-                <div id="deployFeeDisplay" class="hidden"></div> </div>
+            </div>
 
             <div>
                 <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-500">One-Time Costs</h3>
@@ -244,44 +259,77 @@
                 <div class="flex items-center justify-between border-slate-700 border-t mt-3 pt-3"><span class="text-sm text-slate-400">Total OTC</span><span class="font-bold text-lg text-orange-400" id="totalOTC">$0.00</span></div>
             </div>
             
-            <div id="licenseError" class="hidden bg-red-900/50 border border-red-500 p-2 rounded text-xs text-red-200 mt-4">
-                Warning: <span id="errEndCount"></span> Devices vs <span id="errLicCount"></span> Licenses.
+            <div id="licenseError" class="hidden bg-red-900/90 border border-red-500 p-3 rounded text-sm text-red-100 mt-4">
+                <div class="font-bold flex items-center gap-2">
+                    <span>&#9888; Invalid Configuration</span>
+                </div>
+                <div class="mt-1 text-xs opacity-80">Phone count (<span id="errEndCount">0</span>) exceeds License count (<span id="errLicCount">0</span>).</div>
+                <button onclick="overrideLock()" class="mt-3 w-full text-xs bg-red-800 hover:bg-red-700 border border-red-600 py-1 rounded">Unlock / Override</button>
             </div>
         </div>
 
         <div class="border-slate-700 border-t mt-8 pt-6">
             <button onclick="handleSaveToNotes()" class="flex items-center font-bold bg-green-600 gap-3 hover:bg-green-500 justify-center px-4 py-4 rounded-lg shadow-lg text-white w-full transition-all" id="btnSave">
-                <span>Save to Lead Notes</span>
+                <span>Save to Notes</span>
                 <span class="text-xl">&#43;</span>
             </button>
-            <button onclick="generatePDF()" class="w-full mt-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded text-xs uppercase">Download PDF</button>
+            <button onclick="downloadPDF()" class="w-full mt-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded text-xs uppercase" id="btnPdf">Download PDF</button>
         </div>
         <div class="text-center mt-2 text-xs text-green-400 opacity-0 transition-opacity" id="saveFeedback">Saved Successfully!</div>
     </div>
 </div>
 
+<div id="pdfTemplate" class="pdf-container">
+    <div class="pdf-header">
+        <h2 class="pdf-title">Quote Preview</h2>
+        <div class="pdf-info">
+            <div id="pdfLeadName">Lead Name</div>
+            <div id="pdfDate">Date: --/--/----</div>
+        </div>
+    </div>
+    <div class="pdf-section">Monthly Recurring Charges (MRC)</div>
+    <table class="pdf-table">
+        <thead><tr><th class="pdf-th">Item</th><th class="pdf-th" style="width:60px;text-align:center">Qty</th><th class="pdf-th" style="text-align:right">Rate</th><th class="pdf-th" style="text-align:right">Total</th></tr></thead>
+        <tbody id="pdfMrcBody"></tbody>
+        <tfoot><tr class="pdf-total-row"><td colspan="3" style="text-align:right;">TOTAL MONTHLY:</td><td style="text-align:right;" id="pdfMrcTotal">$0.00</td></tr></tfoot>
+    </table>
+    <div class="pdf-section">One-Time Charges (NRC)</div>
+    <table class="pdf-table">
+        <thead><tr><th class="pdf-th">Item</th><th class="pdf-th" style="width:60px;text-align:center">Qty</th><th class="pdf-th" style="text-align:right">Rate</th><th class="pdf-th" style="text-align:right">Total</th></tr></thead>
+        <tbody id="pdfNrcBody"></tbody>
+        <tfoot><tr class="pdf-total-row"><td colspan="3" style="text-align:right;">TOTAL ONE-TIME:</td><td style="text-align:right;" id="pdfNrcTotal">$0.00</td></tr></tfoot>
+    </table>
+</div>
+
 <script>
-    // --- 1. STATE & CONSTANTS ---
-    // Inherited from v7 but prices will be overwritten by Inventory Controller
-    let PRICES = {
-        stdUser:21,stdSetup:12,advUser:29,advSetup:14,ccAgent:55,ccSetup:25,
-        sipChannel:24.99,sipSetup:15,
-        newLocal:1,newLocalSetup:1,newTF:1,newTFSetup:2,
-        sidecar:125,sidecarPSU:15,
-        efax:14,efaxSetup:14,
-        phyFaxLine:32,phyFaxConfig:126,potsLine:32,
-        pagingConfig:126,pagingSurvey:169,
-        hwBasic:139,hwOffice:165,hwExec:205,hwConf:630,hwConfMics:220,
-        hwHeadsets:185,
-        hwCordlessHandset:129,hwCordlessBase:129,
-        ata:45,hwWallMount:10,hwPowerSupply:15,
-        rec100:20,rec100Setup:8,rec500:70,rec500Setup:8
+    // --- STATE ---
+    let PRICES = { 
+        // Defaults, overwritten by Inventory
+        stdUser:21, stdSetup:12, advUser:29, advSetup:14, ccAgent:55, ccSetup:25,
+        potsLine:32, potsSetup:126, ata:45,
+        webfax:14, webfaxSetup:14,
+        paging:32, pagingSetup:126, pagingSurvey:169,
+        hwBasic:139, hwOffice:165, hwExec:205, hwConf:630, hwCordlessBase:129, hwCordlessHandset:129,
+        hwWallMount:10, hwPowerSupply:15, sidecar:125, sidecarPSU:15,
+        deployHourly:200,
+        sipChannel:24.99, sipSetup:15
+    };
+    
+    // Constants for Specific Logic
+    const FEES = {
+        newLocalSetup: 1.00,
+        newTFSetup: 2.00,
+        excessDID: 1.00,
+        tfMRC: 1.00,
+        tfBundle: 15.00
     };
 
     let LEAD_ID = null;
     let LEAD_NAME = "Lead";
+    let OVERRIDE_LOCK = false;
+    let QUOTE_DATA = { mrc:[], nrc:[] };
 
-    // --- 2. ZOHO INIT & INVENTORY ---
+    // --- INIT ---
     ZOHO.embeddedApp.on("PageLoad", function(data){
         if(data && data.EntityId) {
             LEAD_ID = Array.isArray(data.EntityId) ? data.EntityId[0] : data.EntityId;
@@ -293,386 +341,351 @@
     async function initWidget() {
         document.getElementById('dateDisplay').innerText = "Date: " + new Date().toLocaleDateString();
         showLoader(true);
-
         try {
-            // A. Fetch Lead Name
-            let leadReq = await ZOHO.CRM.API.getRecord({ Entity: "Leads", RecordID: LEAD_ID });
-            if(leadReq.data){
-                let l = leadReq.data[0];
-                LEAD_NAME = (l.First_Name ? l.First_Name + " " : "") + l.Last_Name;
+            let l = await ZOHO.CRM.API.getRecord({ Entity: "Leads", RecordID: LEAD_ID });
+            if(l.data) {
+                let d = l.data[0];
+                LEAD_NAME = (d.First_Name ? d.First_Name + " " : "") + d.Last_Name;
                 document.getElementById('recordNameDisplay').innerText = "Lead: " + LEAD_NAME;
             }
-
-            // B. Fetch Inventory & Update PRICES
-            let prodReq = await ZOHO.CRM.API.getAllRecords({ Entity: "Products", sort_order: "asc", per_page: 200 });
-            if(prodReq.data) {
-                updatePricesFromInventory(prodReq.data);
-            }
-        } catch(e) { console.error(e); }
+            
+            let prod = await ZOHO.CRM.API.getAllRecords({ Entity: "Products", sort_order: "asc", per_page: 200 });
+            if(prod.data) updatePrices(prod.data);
+        } catch(e){ console.error(e); }
         
         showLoader(false);
         calculateTotals();
     }
 
-    function updatePricesFromInventory(products) {
-        // Simple Lowest Price Finder Logic from previous step
-        const find = (cat, type, sku) => {
-            let matches = products.filter(p => p.Product_Active);
-            if(sku) matches = matches.filter(p => p.Product_Code === sku);
-            else if(cat) matches = matches.filter(p => p.CF_CRM_Category === cat || p.Product_Category === cat);
-            
-            if(type && !sku) matches = matches.filter(p => p.CF_Software_Type === type || p.CF_Hardware_Type === type);
-            
-            matches.sort((a,b) => (a.Unit_Price||0) - (b.Unit_Price||0));
-            return matches.length > 0 ? (matches[0].Unit_Price||0) : null;
+    function updatePrices(products) {
+        const get = (cat, type, sku) => {
+            let m = products.filter(p=>p.Product_Active);
+            if(sku) m = m.filter(p=>p.Product_Code===sku);
+            else if(cat) m = m.filter(p=>p.CF_CRM_Category===cat || p.Product_Category===cat);
+            if(type && !sku) m = m.filter(p=>p.CF_Software_Type===type || p.CF_Hardware_Type===type);
+            m.sort((a,b)=>(a.Unit_Price||0)-(b.Unit_Price||0));
+            return m.length ? (m[0].Unit_Price||0) : null;
         };
-
-        // Mapping Inventory to PRICES object
+        
         let p;
-        if(p = find('VoiceOS', 'VoiceOS STD')) PRICES.stdUser = p;
-        if(p = find(null, null, 'Onboarding_VoiceOS-STD')) PRICES.stdSetup = p;
+        if(p=get('VoiceOS','VoiceOS STD')) PRICES.stdUser=p;
+        if(p=get(null,null,'Onboarding_VoiceOS-STD')) PRICES.stdSetup=p;
+        if(p=get('VoiceOS','VoiceOS ADV')) PRICES.advUser=p;
+        if(p=get(null,null,'Onboarding_VoiceOS-ADV')) { PRICES.advSetup=p; PRICES.webfaxSetup=p; }
+        if(p=get('VoiceOS','VoiceOS CC')) PRICES.ccAgent=p;
+        if(p=get(null,null,'Onboarding_VoiceOS-CC')) PRICES.ccSetup=p;
         
-        if(p = find('VoiceOS', 'VoiceOS ADV')) PRICES.advUser = p;
-        if(p = find(null, null, 'Onboarding_VoiceOS-ADV')) PRICES.advSetup = p; // Also Webfax Setup
+        if(p=get('Standard Phones')) PRICES.hwBasic=p;
+        if(p=get('Office Phones')) PRICES.hwOffice=p;
+        if(p=get('Executive Phones')) PRICES.hwExec=p;
+        if(p=get('Conference Phones')) PRICES.hwConf=p;
+        if(p=get('Cordless Phones','Cordless Base')) PRICES.hwCordlessBase=p;
+        if(p=get('Cordless Phones','Cordless Handset')) PRICES.hwCordlessHandset=p;
         
-        if(p = find('VoiceOS', 'VoiceOS CC')) PRICES.ccAgent = p;
-        if(p = find(null, null, 'Onboarding_VoiceOS-CC')) PRICES.ccSetup = p;
-
-        if(p = find('Standard Phones')) PRICES.hwBasic = p;
-        if(p = find('Office Phones')) PRICES.hwOffice = p;
-        if(p = find('Executive Phones')) PRICES.hwExec = p;
-        if(p = find('Conference Phones')) PRICES.hwConf = p;
+        if(p=get('Phone Misc','Wall Mount')) PRICES.hwWallMount=p;
+        if(p=get('Phone Misc','Power Supply')) PRICES.hwPowerSupply=p;
+        if(p=get('Phone Misc','Sidecar')) PRICES.sidecar=p;
         
-        if(p = find('Cordless Phones', 'Cordless Handset')) PRICES.hwCordlessHandset = p;
-        if(p = find('Cordless Phones', 'Cordless Base')) PRICES.hwCordlessBase = p;
-
-        if(p = find('Phone Misc', 'Wall Mount')) PRICES.hwWallMount = p;
-        if(p = find('Phone Misc', 'Power Supply')) PRICES.hwPowerSupply = p;
-        if(p = find('Phone Misc', 'Sidecar')) PRICES.sidecar = p;
-
-        if(p = find(null, null, 'AMP_PS_STD_FC')) PRICES.deployHourly = p; // Custom prop
-        if(p = find(null, null, 'AMP_PS_SVY_FC')) PRICES.pagingSurvey = p;
-
-        // Update UI Display for Prices
-        document.getElementById('price_stdUser').innerText = `$${PRICES.stdUser}/mo`;
-        document.getElementById('price_advUser').innerText = `$${PRICES.advUser}/mo`;
-        document.getElementById('price_ccAgent').innerText = `$${PRICES.ccAgent}/mo`;
+        if(p=get(null,null,'AMP_PS_STD_FC')) PRICES.deployHourly=p;
+        if(p=get(null,null,'AMP_PS_SVY_FC')) PRICES.pagingSurvey=p;
+        if(p=get(null,null,'Onboarding_VoiceOS-POTS')) PRICES.potsSetup=p;
         
-        document.getElementById('price_hwBasic').innerText = `$${PRICES.hwBasic}`;
-        document.getElementById('price_hwOffice').innerText = `$${PRICES.hwOffice}`;
-        document.getElementById('price_hwExec').innerText = `$${PRICES.hwExec}`;
-        document.getElementById('price_hwConf').innerText = `$${PRICES.hwConf}`;
+        // Refresh UI Text
+        setText('price_stdUser', `$${PRICES.stdUser}/mo`);
+        setText('price_advUser', `$${PRICES.advUser}/mo`);
+        setText('price_ccAgent', `$${PRICES.ccAgent}/mo`);
+        setText('price_hwBasic', `$${PRICES.hwBasic}`);
+        setText('price_hwOffice', `$${PRICES.hwOffice}`);
+        setText('price_hwExec', `$${PRICES.hwExec}`);
     }
 
-    // --- 3. UI INTERACTION (Restored from v7) ---
-    
-    // SIP Toggle Logic
+    // --- UI EVENTS ---
+    document.querySelectorAll('.calc-trigger').forEach(e => e.addEventListener('input', calculateTotals));
+    document.querySelectorAll('.tf-trigger').forEach(e => e.addEventListener('input', () => {
+        const totalTF = val('portTF') + val('newTF');
+        document.getElementById('tfMinutesRow').classList.toggle('hidden', totalTF <= 0);
+        calculateTotals();
+    }));
     document.getElementById('sipTrunkingToggle').addEventListener('change', (e) => {
-        const checked = e.target.checked;
-        document.getElementById('sipDetails').classList.toggle('hidden', !checked);
-        // Switch Animation
-        const track = document.getElementById('sipTrack');
-        const dot = document.getElementById('sipDot');
-        if(checked) {
-            track.classList.remove('bg-slate-200'); track.classList.add('bg-blue-500');
-            dot.classList.add('translate-x-full');
-        } else {
-            track.classList.add('bg-slate-200'); track.classList.remove('bg-blue-500');
-            dot.classList.remove('translate-x-full');
-        }
+        document.getElementById('sipDetails').classList.toggle('hidden', !e.target.checked);
+        const t=document.getElementById('sipTrack'), d=document.getElementById('sipDot');
+        if(e.target.checked){ t.classList.remove('bg-slate-200'); t.classList.add('bg-blue-500'); d.classList.add('translate-x-full'); }
+        else { t.classList.add('bg-slate-200'); t.classList.remove('bg-blue-500'); d.classList.remove('translate-x-full'); }
         calculateTotals();
     });
-
-    // PoE Logic (Restored v7 Force Logic)
     document.getElementById('customerPoE').addEventListener('change', updatePowerSupplies);
+    
+    document.querySelectorAll('.acc-validate').forEach(el => el.addEventListener('input', (e) => {
+        const max = val(e.target.dataset.parent);
+        if(val(e.target.id) > max) e.target.value = max;
+        calculateTotals();
+    }));
 
     function updatePowerSupplies() {
-        const hasPoE = document.getElementById('customerPoE').checked;
-        const psuInputs = document.querySelectorAll('.psu-unit');
-        
-        psuInputs.forEach(input => {
-            const parentId = input.getAttribute('data-parent');
-            const parentQty = val(parentId);
-            
-            if(!hasPoE) {
-                // No PoE = Mandatory PSUs
-                input.value = parentQty > 0 ? parentQty : '';
-                input.setAttribute('readonly', true);
-                input.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+        const poe = document.getElementById('customerPoE').checked;
+        document.querySelectorAll('.psu-unit').forEach(el => {
+            const parent = val(el.dataset.parent);
+            if(!poe) {
+                el.value = parent > 0 ? parent : '';
+                el.setAttribute('readonly', true);
+                el.classList.add('bg-gray-100','text-gray-500');
             } else {
-                // Yes PoE = Optional
-                input.removeAttribute('readonly');
-                input.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
-                // We do NOT clear value here, user might still want them.
+                el.removeAttribute('readonly');
+                el.classList.remove('bg-gray-100','text-gray-500');
             }
         });
         calculateTotals();
     }
+    
+    function overrideLock() {
+        OVERRIDE_LOCK = true;
+        document.getElementById('licenseError').classList.add('hidden');
+        document.getElementById('btnSave').disabled = false;
+        document.getElementById('btnPdf').disabled = false;
+        document.getElementById('btnSave').classList.remove('opacity-50','cursor-not-allowed');
+        document.getElementById('btnPdf').classList.remove('opacity-50','cursor-not-allowed');
+    }
 
-    // Parent/Child Validation (Restored)
-    document.querySelectorAll('.acc-validate').forEach(input => {
-        input.addEventListener('input', (e) => {
-            const parentId = e.target.getAttribute('data-parent');
-            const parentQty = val(parentId);
-            if(val(e.target.id) > parentQty) e.target.value = parentQty;
-            calculateTotals();
-        });
-    });
-
-    // Main Listeners
-    document.querySelectorAll('.calc-trigger').forEach(el => {
-        el.addEventListener('input', calculateTotals);
-        el.addEventListener('change', calculateTotals);
-    });
-
-    // Specific Parent Listener to update children limits
-    document.querySelectorAll('.parent-hw').forEach(el => {
-        el.addEventListener('input', () => {
-            updatePowerSupplies(); // Re-eval mandatory counts
-            // Also cap mounts
-            const id = el.id;
-            const qty = val(id);
-            document.querySelectorAll(`[data-parent="${id}"]`).forEach(child => {
-                if(val(child.id) > qty) child.value = qty;
-            });
-            calculateTotals();
-        });
-    });
-
-    // --- 4. CALCULATOR LOGIC (v7 Ported) ---
+    // --- CORE LOGIC ---
     function calculateTotals() {
-        let mrc = 0; let otc = 0;
-        let mrcItems = []; let otcItems = [];
+        QUOTE_DATA = { mrc: [], nrc: [] };
+        let mrcT = 0, nrcT = 0;
 
-        // 1. Licenses
+        const addMrc = (name, qty, rate, entitlement) => {
+            if(qty<=0) return;
+            mrcT += qty*rate;
+            QUOTE_DATA.mrc.push({ name, qty, rate, total: qty*rate, entitlement });
+        };
+        const addNrc = (name, qty, rate) => {
+            if(qty<=0) return;
+            nrcT += qty*rate;
+            QUOTE_DATA.nrc.push({ name, qty, rate, total: qty*rate });
+        };
+
+        // 1. Licenses & Setup
         const std = val('standardUsers');
-        if(std) { mrc += std*PRICES.stdUser; otc += std*PRICES.stdSetup; mrcItems.push(row(`${std}x Std User`, std*PRICES.stdUser)); }
+        addMrc('Standard User', std, PRICES.stdUser); addNrc('Setup: Standard User', std, PRICES.stdSetup);
         
         const adv = val('advancedUsers');
-        if(adv) { mrc += adv*PRICES.advUser; otc += adv*PRICES.advSetup; mrcItems.push(row(`${adv}x Adv User`, adv*PRICES.advUser)); }
+        addMrc('Advanced User', adv, PRICES.advUser); addNrc('Setup: Advanced User', adv, PRICES.advSetup);
         
         const cc = val('ccAgents');
-        if(cc) { mrc += cc*PRICES.ccAgent; otc += cc*PRICES.ccSetup; mrcItems.push(row(`${cc}x CC Agent`, cc*PRICES.ccAgent)); }
+        addMrc('CC Agent', cc, PRICES.ccAgent); addNrc('Setup: CC Agent', cc, PRICES.ccSetup);
 
-        // 2. Numbers
-        const totalSeats = std + adv + cc;
-        const portL = val('portLocal'); const newL = val('newLocal');
-        const portT = val('portTF');    const newT = val('newTF');
-        const totalNums = portL + newL + portT + newT;
+        // 2. Analog / Other Seats
+        const webfax = val('efaxQty');
+        addMrc('Webfax', webfax, PRICES.webfax); addNrc('Setup: Webfax', webfax, PRICES.webfaxSetup);
         
-        const included = Math.min(totalNums, totalSeats);
-        const excess = Math.max(0, totalNums - totalSeats);
+        const pots = val('physicalFaxQty'); // POTS Replacement
+        if(pots > 0) {
+            addMrc('POTS Replacement', pots, PRICES.potsLine);
+            addNrc('Setup: POTS Rep', pots, PRICES.potsSetup);
+            addNrc('ATA Device', pots, PRICES.ata);
+        }
         
-        if(included > 0) mrcItems.push(`<div class="summary-row"><span class="summary-label text-green-600">${included}x DIDs (Included)</span><span class="summary-val">$0.00</span></div>`);
-        if(excess > 0) { mrc += excess*1; mrcItems.push(row(`${excess}x Excess DIDs`, excess)); }
+        const paging = val('pagingQty');
+        if(paging > 0) {
+            addMrc('Paging/Analog Ext', paging, PRICES.potsLine); // Assume same rate
+            addNrc('Setup: Paging', paging, PRICES.pagingSetup); // Assume same setup
+            addNrc('ATA Device', paging, PRICES.ata);
+        }
+
+        // 3. Entitlements Calculation
+        const totalEntitlements = std + adv + cc + webfax + pots + paging;
         
-        if(newL > 0) { otc += newL*PRICES.newLocalSetup; otcItems.push(row(`${newL}x New DID Setup`, newL*PRICES.newLocalSetup)); }
-        if(newT > 0) { otc += newT*PRICES.newTFSetup; otcItems.push(row(`${newT}x New TF Setup`, newT*PRICES.newTFSetup)); }
+        const portL = val('portLocal');
+        const newL = val('newLocal');
+        const totalLocal = portL + newL;
+        
+        const freeLocal = Math.min(totalLocal, totalEntitlements);
+        const billableLocal = Math.max(0, totalLocal - totalEntitlements);
+        
+        // Add Local DIDs
+        if(freeLocal > 0) addMrc('Local DID (Included)', freeLocal, 0, true);
+        if(billableLocal > 0) addMrc('Local DID (Excess)', billableLocal, FEES.excessDID);
+        
+        // Setup for New Local
+        if(newL > 0) addNrc('New DID Activation', newL, FEES.newLocalSetup);
+        
+        // Toll Free (Always Billable)
+        const portT = val('portTF');
+        const newT = val('newTF');
+        const totalTF = portT + newT;
+        
+        if(totalTF > 0) addMrc('Toll-Free Number', totalTF, FEES.tfMRC);
+        if(newT > 0) addNrc('New TF Activation', newT, FEES.newTFSetup);
         
         // TF Bundle
-        const tfMin = val('tfMinutes');
-        if(tfMin > 0) {
-            const bundles = Math.ceil(tfMin / 500);
-            mrc += bundles * 15;
-            mrcItems.push(row(`${bundles}x TF Min Bundle`, bundles*15));
-            document.getElementById('tfCallout').classList.remove('hidden');
-        } else {
-            document.getElementById('tfCallout').classList.add('hidden');
+        if(totalTF > 0 && val('tfMinutes') > 0) {
+            const bundles = Math.ceil(val('tfMinutes') / 500);
+            addMrc('Toll-Free Minutes Bundle', bundles, FEES.tfBundle);
         }
 
-        // SIP Trunking
-        if(document.getElementById('sipTrunkingToggle').checked) {
-            const ch = val('sipChannels');
-            mrc += ch * PRICES.sipChannel;
-            otc += PRICES.sipSetup;
-            mrcItems.push(row(`${ch}x SIP Channels`, ch*PRICES.sipChannel));
-        }
-
-        // 3. Hardware
-        const basic = val('hwBasic'); if(basic) otc += basic*PRICES.hwBasic;
-        const office = val('hwOffice'); if(office) otc += office*PRICES.hwOffice;
-        const exec = val('hwExec'); if(exec) otc += exec*PRICES.hwExec;
-        const conf = val('hwConf'); if(conf) otc += conf*PRICES.hwConf;
+        // 4. Hardware
+        addNrc('Basic Phone', val('hwBasic'), PRICES.hwBasic);
+        addNrc('Office Phone', val('hwOffice'), PRICES.hwOffice);
+        addNrc('Exec Phone', val('hwExec'), PRICES.hwExec);
+        addNrc('Conf Phone', val('hwConf'), PRICES.hwConf);
+        addNrc('Exp Mics', val('hwConfMics'), 220); // Fixed price fallback
+        addNrc('Headsets', val('hwHeadsets'), 185);
         
-        // Cordless
         const cord = val('hwCordless');
         if(cord > 0) {
             const kits = Math.ceil(cord / 10);
-            const extra = Math.max(0, cord - kits); // v7 logic: 8? User said 10. Using 10.
-            const cost = (kits * PRICES.hwCordlessBase) + (extra * PRICES.hwCordlessHandset);
-            otc += cost;
-            otcItems.push(row(`${cord}x Cordless Total`, cost));
-            document.getElementById('cordlessInfo').classList.remove('hidden');
-        } else {
-             document.getElementById('cordlessInfo').classList.add('hidden');
+            const extra = Math.max(0, cord - kits);
+            addNrc('Cordless Base Kit', kits, PRICES.hwCordlessBase);
+            addNrc('Cordless Handset', extra, PRICES.hwCordlessHandset);
         }
-
-        // Accessories
+        
         const mounts = val('mount_basic')+val('mount_office')+val('mount_exec');
-        if(mounts) otc += mounts*PRICES.hwWallMount;
+        addNrc('Wall Mount', mounts, PRICES.hwWallMount);
         
         const psus = val('psu_basic')+val('psu_office')+val('psu_exec');
-        if(psus) {
-            otc += psus*PRICES.hwPowerSupply;
-            otcItems.push(row(`${psus}x Power Supplies`, psus*PRICES.hwPowerSupply));
-        }
+        addNrc('Power Supply', psus, PRICES.hwPowerSupply);
         
-        // Sidecars (Max Power Rule)
         const side = val('sidecars');
         if(side > 0) {
-            let sCost = side * PRICES.sidecar;
-            // v7 Logic: extraSidecarPSUs = ceil(sides/2). 
-            // My previous logic: 1 per sidecar.
-            // I will use v7 Logic as requested.
-            let sidePSUs = Math.ceil(side / 2);
-            sCost += (sidePSUs * PRICES.sidecarPSU);
-            otc += sCost;
-            otcItems.push(row(`${side}x Sidecars + PWR`, sCost));
-            document.getElementById('sidecarPSUInfo').classList.remove('hidden');
-        } else {
-            document.getElementById('sidecarPSUInfo').classList.add('hidden');
-        }
-
-        // 4. Analog
-        const efax = val('efaxQty');
-        if(efax) { mrc += efax*PRICES.efax; otc += efax*PRICES.efaxSetup; mrcItems.push(row(`${efax}x E-Fax`, efax*PRICES.efax)); }
-        
-        const phyFax = val('physicalFaxQty');
-        if(phyFax) {
-            mrc += phyFax*PRICES.potsLine;
-            otc += phyFax * (PRICES.ata + PRICES.phyFaxConfig); // HW + Setup
-            mrcItems.push(row(`${phyFax}x Analog Line`, phyFax*PRICES.potsLine));
-        }
-
-        const paging = val('pagingQty');
-        if(paging) {
-            mrc += paging*PRICES.potsLine;
-            otc += paging * (PRICES.ata + PRICES.pagingConfig);
-            mrcItems.push(row(`${paging}x Paging Line`, paging*PRICES.potsLine));
+            addNrc('Sidecar', side, PRICES.sidecar);
+            addNrc('Sidecar PSU', side, PRICES.sidecarPSU); // 1 per sidecar
         }
 
         // 5. Deployment
-        const totalDev = basic + office + exec + conf + cord + phyFax + paging + side;
-        document.getElementById('totalDeviceCount').innerText = totalDev + " Devices";
+        const totalPhones = val('hwBasic')+val('hwOffice')+val('hwExec')+val('hwConf')+val('hwCordless');
+        const totalATAs = pots + paging;
+        const totalDevices = totalPhones + totalATAs + side;
         
-        // Install Fee
+        document.getElementById('totalDeviceCount').innerText = `${totalDevices} Devices`;
+        
         const installCb = document.getElementById('includeInstall');
         const installStatus = document.getElementById('installStatus');
-        const hasATA = (phyFax > 0 || paging > 0);
+        const hasMandatoryInstall = (totalATAs > 0);
         
-        // ATA Mandate Logic
-        if(hasATA) {
-            installCb.checked = true;
-            installCb.disabled = true;
-            installStatus.innerText = "MANDATORY (ATA)";
-            installStatus.className = "text-[10px] font-bold text-orange-500";
+        if(hasMandatoryInstall) {
+            installCb.checked = true; installCb.disabled = true;
+            installStatus.innerText = "MANDATORY (ATA)"; installStatus.className = "text-[10px] font-bold text-orange-500";
         } else {
-            installCb.disabled = (totalDev === 0);
-            installStatus.innerText = "OPTIONAL";
-            installStatus.className = "text-[10px] font-bold text-slate-500";
+            installCb.disabled = (totalDevices === 0);
+            installStatus.innerText = "OPTIONAL"; installStatus.className = "text-[10px] font-bold text-slate-500";
         }
         
-        if(installCb.checked && totalDev > 0) {
-            // v7 Logic: $169 per 5 devices.
-            // My previous Inventory Logic: $200/hr.
-            // User instruction: "On-Site Install is SKU AMP_PS_STD_FC". Price from Inventory is $200.
-            // I will use Inventory Price ($200) and formula: ceil(total/5).
-            const blocks = Math.ceil(totalDev / 5);
-            const deployPrice = PRICES.deployHourly || 200; 
-            const deployCost = blocks * deployPrice;
-            otc += deployCost;
-            otcItems.push(row(`Install (${blocks} blk)`, deployCost));
-            document.getElementById('deployMsg').innerText = `$${deployPrice} / 5 dev`;
+        if(installCb.checked && totalDevices > 0) {
+            const hours = Math.ceil(totalDevices / 5);
+            addNrc(`On-Site Labor (${hours} hrs)`, hours, PRICES.deployHourly);
+            document.getElementById('deployMsg').innerText = `${hours} Hours @ $${PRICES.deployHourly}/hr`;
         } else {
-            document.getElementById('deployMsg').innerText = "Add hardware...";
+            document.getElementById('deployMsg').innerText = "";
+        }
+        
+        if(paging > 0) addNrc('Site Survey', 1, PRICES.pagingSurvey);
+        
+        // SIP
+        if(document.getElementById('sipTrunkingToggle').checked) {
+            addMrc('SIP Channel', val('sipChannels'), PRICES.sipChannel);
+            addNrc('SIP Activation', 1, PRICES.sipSetup);
         }
 
-        // Survey Logic
-        const fpNo = document.getElementById('fpNo').checked;
-        if(paging > 0 || fpNo) {
-            otc += PRICES.pagingSurvey;
-            otcItems.push(row(`Site Survey`, PRICES.pagingSurvey));
+        // RENDER UI
+        document.getElementById('totalMRC').innerText = `$${mrcT.toFixed(2)}`;
+        document.getElementById('totalOTC').innerText = `$${nrcT.toFixed(2)}`;
+        
+        renderSummaryList('mrcList', QUOTE_DATA.mrc);
+        renderSummaryList('otcList', QUOTE_DATA.nrc);
+        
+        // CHECK LOCK
+        const totalSeats = std + adv + cc;
+        // Phone Lock: Phones (Physical) cannot exceed Seats
+        // Phones = Basic + Office + Exec + Conf + CordlessHandsets (Base kits irrelevant for license count, users are handsets)
+        // Actually Cordless = total cordless users entered.
+        if(!OVERRIDE_LOCK && totalPhones > totalSeats) {
+            document.getElementById('licenseError').classList.remove('hidden');
+            document.getElementById('errEndCount').innerText = totalPhones;
+            document.getElementById('errLicCount').innerText = totalSeats;
+            toggleButtons(false);
+        } else {
+            document.getElementById('licenseError').classList.add('hidden');
+            toggleButtons(true);
         }
-
-        // Render Totals
-        document.getElementById('totalMRC').innerText = `$${mrc.toFixed(2)}`;
-        document.getElementById('totalOTC').innerText = `$${otc.toFixed(2)}`;
-        document.getElementById('mrcList').innerHTML = mrcItems.length ? mrcItems.join('') : '<div class="text-sm text-slate-600 italic">No items...</div>';
-        document.getElementById('otcList').innerHTML = otcItems.length ? otcItems.join('') : '<div class="text-sm text-slate-600 italic">No items...</div>';
     }
 
-    function row(name, price) {
-        return `<div class="summary-row"><span class="summary-label">${name}</span><span class="summary-val">$${price.toFixed(2)}</span></div>`;
-    }
-    
-    // --- 5. SAVE TO LEAD NOTES ---
-    function handleSaveToNotes() {
-        const btn = document.getElementById('btnSave');
-        const originalText = btn.innerHTML;
-        btn.innerText = "Saving...";
-        btn.disabled = true;
-
-        const summary = generateSummaryText();
-        
-        ZOHO.CRM.API.addRecord({
-            Entity: "Notes",
-            APIData: {
-                "Parent_Id": LEAD_ID,
-                "Se_Module": "Leads",
-                "Note_Title": "VoiceOS Config Worksheet",
-                "Note_Content": summary
-            }
-        }).then(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-            const fb = document.getElementById('saveFeedback');
-            fb.classList.remove('opacity-0');
-            setTimeout(() => fb.classList.add('opacity-0'), 3000);
-        }).catch(e => {
-            console.error(e);
-            alert("Error saving note: " + JSON.stringify(e));
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+    function toggleButtons(enable) {
+        const ids = ['btnSave', 'btnPdf'];
+        ids.forEach(id => {
+            const btn = document.getElementById(id);
+            btn.disabled = !enable;
+            if(enable) btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            else btn.classList.add('opacity-50', 'cursor-not-allowed');
         });
     }
 
-    function generateSummaryText() {
-        // Simple text builder for the Note
-        let t = `LEAD CONFIG - ${new Date().toLocaleDateString()}\n=========================\n`;
-        t += `[1] SEATS\n`;
-        if(val('standardUsers')) t += `- Std: ${val('standardUsers')} @ $${PRICES.stdUser}\n`;
-        if(val('advancedUsers')) t += `- Adv: ${val('advancedUsers')} @ $${PRICES.advUser}\n`;
-        if(val('ccAgents')) t += `- CC: ${val('ccAgents')} @ $${PRICES.ccAgent}\n`;
-        
-        t += `\n[2] HARDWARE\n`;
-        if(val('hwBasic')) t += `- Basic: ${val('hwBasic')}\n`;
-        if(val('hwOffice')) t += `- Office: ${val('hwOffice')}\n`;
-        if(val('hwExec')) t += `- Exec: ${val('hwExec')}\n`;
-        
-        const psus = val('psu_basic')+val('psu_office')+val('psu_exec');
-        if(psus > 0) t += `- PSUs: ${psus} (PoE: ${document.getElementById('customerPoE').checked ? 'YES' : 'NO'})\n`;
-        
-        t += `\n[3] TOTALS\n`;
-        t += `MRC: ${document.getElementById('totalMRC').innerText}\n`;
-        t += `OTC: ${document.getElementById('totalOTC').innerText}\n`;
-        return t;
+    function renderSummaryList(id, items) {
+        const html = items.map(i => `
+            <div class="summary-row">
+                <span class="summary-label w-2/3 truncate">${i.name} (${i.qty})</span>
+                <span class="summary-val">$${i.total.toFixed(2)}</span>
+            </div>
+        `).join('');
+        document.getElementById(id).innerHTML = html || '<div class="text-sm italic text-slate-600">No items...</div>';
     }
 
-    async function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        let element = document.getElementById('quoteContainer');
-        let canvas = await html2canvas(element, { scale: 1.5 });
-        let imgData = canvas.toDataURL('image/jpeg', 0.95);
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        let pdfWidth = pdf.internal.pageSize.getWidth();
-        let pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    // --- GENERATORS ---
+    async function downloadPDF() {
+        // Populate Hidden Template
+        const fillTable = (bodyId, items) => {
+            const tbody = document.getElementById(bodyId);
+            tbody.innerHTML = items.map(i => `
+                <tr>
+                    <td class="pdf-td">${i.name}${i.entitlement ? "<span class='badge-inc'>Included</span>" : ""}</td>
+                    <td class="pdf-td" style="text-align:center">${i.qty}</td>
+                    <td class="pdf-td" style="text-align:right">$${i.rate.toFixed(2)}</td>
+                    <td class="pdf-td" style="text-align:right">$${i.total.toFixed(2)}</td>
+                </tr>
+            `).join('');
+        };
+        
+        document.getElementById('pdfLeadName').innerText = LEAD_NAME;
+        document.getElementById('pdfDate').innerText = "Date: " + new Date().toLocaleDateString();
+        
+        fillTable('pdfMrcBody', QUOTE_DATA.mrc);
+        fillTable('pdfNrcBody', QUOTE_DATA.nrc);
+        
+        document.getElementById('pdfMrcTotal').innerText = document.getElementById('totalMRC').innerText;
+        document.getElementById('pdfNrcTotal').innerText = document.getElementById('totalOTC').innerText;
+        
+        // Generate
+        const element = document.getElementById('pdfTemplate');
+        const canvas = await html2canvas(element, { scale: 2 });
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Quote_${LEAD_NAME.replace(/\W/g,'_')}.pdf`);
+        pdf.save(`Quote_${LEAD_NAME.replace(/[^a-z0-9]/gi, '_')}.pdf`);
+    }
+    
+    function handleSaveToNotes() {
+        const btn = document.getElementById('btnSave');
+        const oldText = btn.innerHTML;
+        btn.innerText = "Saving..."; btn.disabled = true;
+        
+        const summary = `VOICEOS CONFIG - ${new Date().toLocaleDateString()}\n--------------------------------\n` +
+            `MRC TOTAL: ${document.getElementById('totalMRC').innerText}\n` +
+            `OTC TOTAL: ${document.getElementById('totalOTC').innerText}\n\n` +
+            `[MRC ITEMS]\n` + QUOTE_DATA.mrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n') + 
+            `\n\n[NRC ITEMS]\n` + QUOTE_DATA.nrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n');
+            
+        ZOHO.CRM.API.addRecord({ Entity: "Notes", APIData: { Parent_Id: LEAD_ID, Se_Module: "Leads", Note_Title: "Quote Config", Note_Content: summary } })
+        .then(() => {
+            btn.innerHTML = oldText; btn.disabled = false;
+            const fb = document.getElementById('saveFeedback');
+            fb.classList.remove('opacity-0'); setTimeout(()=>fb.classList.add('opacity-0'),2000);
+        });
     }
 
-    // Helper
+    // Utils
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
-    function showLoader(s) { document.getElementById('loader').style.display = s ? 'block' : 'none'; }
+    function setText(id, t) { if(document.getElementById(id)) document.getElementById(id).innerText = t; }
+    function showLoader(s) { document.getElementById('loader').style.display = s?'block':'none'; }
 
 </script>
 </body>
