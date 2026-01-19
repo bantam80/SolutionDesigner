@@ -31,11 +31,16 @@
         .acc-label{@apply text-[10px] font-bold text-slate-400 mb-1 block uppercase tracking-wide text-center}
         .acc-input{@apply w-full text-xs border-slate-200 rounded p-1 text-center font-semibold focus:ring-1 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400}
         
-        /* PDF TEMPLATE STYLES (Hidden) */
+        /* PDF TEMPLATE STYLES */
         .pdf-container { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
-        .pdf-header { display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-        .pdf-title { font-size: 24px; font-weight: bold; color: #2c3e50; }
-        .pdf-info { text-align: right; font-size: 14px; color: #777; }
+        
+        /* PDF Header Layout */
+        .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .pdf-logo { height: 45px; width: auto; display: block; }
+        .pdf-meta { text-align: right; font-size: 14px; color: #777; line-height: 1.5; }
+        .pdf-title-row { margin-bottom: 20px; }
+        .pdf-doc-title { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+
         .pdf-section { font-size: 16px; font-weight: bold; margin: 25px 0 10px; color: #444; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
         .pdf-table { width: 100%; border-collapse: collapse; font-size: 14px; }
         .pdf-th { background: #f8f9fa; color: #555; text-align: left; padding: 8px; border-bottom: 2px solid #ddd; font-weight: 600; }
@@ -280,19 +285,26 @@
 </div>
 
 <div id="pdfTemplate" class="pdf-container">
-    <div class="pdf-header">
-        <h2 class="pdf-title">Quote Preview</h2>
-        <div class="pdf-info">
-            <div id="pdfLeadName">Lead Name</div>
+    <div class="pdf-header-row">
+        <img src="https://bartow-voiceos.zohosites.com/Logos/PoweredBy_SMALL.png" class="pdf-logo" alt="VoiceOS" crossorigin="anonymous">
+        
+        <div class="pdf-meta">
+            <div id="pdfLeadName" style="font-weight: bold; color:#444;">Lead Name</div>
             <div id="pdfDate">Date: --/--/----</div>
         </div>
     </div>
+    
+    <div class="pdf-title-row">
+        <h2 class="pdf-doc-title">Configuration Quote</h2>
+    </div>
+
     <div class="pdf-section">Monthly Recurring Charges (MRC)</div>
     <table class="pdf-table">
         <thead><tr><th class="pdf-th">Item</th><th class="pdf-th" style="width:60px;text-align:center">Qty</th><th class="pdf-th" style="text-align:right">Rate</th><th class="pdf-th" style="text-align:right">Total</th></tr></thead>
         <tbody id="pdfMrcBody"></tbody>
         <tfoot><tr class="pdf-total-row"><td colspan="3" style="text-align:right;">TOTAL MONTHLY:</td><td style="text-align:right;" id="pdfMrcTotal">$0.00</td></tr></tfoot>
     </table>
+    
     <div class="pdf-section">One-Time Charges (NRC)</div>
     <table class="pdf-table">
         <thead><tr><th class="pdf-th">Item</th><th class="pdf-th" style="width:60px;text-align:center">Qty</th><th class="pdf-th" style="text-align:right">Rate</th><th class="pdf-th" style="text-align:right">Total</th></tr></thead>
@@ -593,9 +605,6 @@
         
         // CHECK LOCK
         const totalSeats = std + adv + cc;
-        // Phone Lock: Phones (Physical) cannot exceed Seats
-        // Phones = Basic + Office + Exec + Conf + CordlessHandsets (Base kits irrelevant for license count, users are handsets)
-        // Actually Cordless = total cordless users entered.
         if(!OVERRIDE_LOCK && totalPhones > totalSeats) {
             document.getElementById('licenseError').classList.remove('hidden');
             document.getElementById('errEndCount').innerText = totalPhones;
@@ -651,9 +660,9 @@
         document.getElementById('pdfMrcTotal').innerText = document.getElementById('totalMRC').innerText;
         document.getElementById('pdfNrcTotal').innerText = document.getElementById('totalOTC').innerText;
         
-        // Generate
+        // Generate with CORS enabled for the logo
         const element = document.getElementById('pdfTemplate');
-        const canvas = await html2canvas(element, { scale: 2 });
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: true });
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
         const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
