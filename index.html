@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceOS Solution Designer</title>
+    
+    <script src="https://live.zwidgets.com/js-sdk/1.1/ZohoEmbededAppSDK.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style type="text/tailwindcss">
+        body{font-family:'Inter',sans-serif;background-color:#f8fafc}.section-card{@apply bg-white rounded-xl border border-slate-200 shadow-sm p-8 mb-8 transition-all duration-200}.section-card:hover{@apply shadow-md border-blue-200}.step-header{@apply mb-6 pb-4 border-b-2 border-slate-100 flex items-end justify-between}.step-title{@apply text-2xl font-extrabold text-slate-800 tracking-tight}.step-subtitle{@apply text-sm text-slate-400 font-medium uppercase tracking-wider mb-1}.input-group{@apply relative bg-slate-50 rounded-lg p-4 border border-slate-200 transition-colors focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500}.label-main{@apply block text-sm font-semibold text-slate-700 mb-1}.label-sub{@apply block text-xs text-slate-500 mb-3}.input-clean{@apply w-24 text-right font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-1.5 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}.input-col{@apply w-full text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-md py-2 px-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all}.price-tag{@apply text-xs font-medium text-slate-500 mt-1 block text-right}.toggle-checkbox:checked{@apply right-0 border-green-400}.toggle-checkbox:checked+.toggle-label{@apply bg-green-400}.summary-row{@apply flex justify-between text-sm py-2 border-b border-slate-700/50 last:border-0}.summary-label{@apply text-slate-400}.summary-val{@apply font-medium text-slate-200}.acc-panel{@apply mt-3 pt-3 border-t border-slate-100 bg-slate-50/50 rounded-b-lg px-1}.acc-label{@apply text-[10px] font-bold text-slate-400 mb-1 block uppercase tracking-wide text-center}.acc-input{@apply w-full text-xs border-slate-200 rounded p-1 text-center font-semibold focus:ring-1 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400}
+        
+        /* OVERLAY LOADER */
+        #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; text-align: center; padding-top: 250px; }
+        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 15px; }
+        #loaderText { font-size: 18px; color: #333; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="spinner"></div>
+    <div id="loaderText">Initializing...</div>
+    <div id="loaderSubText" class="text-sm text-gray-500 mt-2">Connecting to VoiceOS...</div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-screen text-slate-600">
+    <div class="relative lg:col-span-8 lg:p-12 p-6 xl:col-span-9" id="quoteContainer">
+        <header class="flex justify-between border-slate-200 border-b items-start max-w-4xl mb-6 pb-6">
+            <div>
+                <h1 class="font-extrabold text-4xl text-slate-900 tracking-tight">Solution Designer</h1>
+                <p class="mt-2 text-slate-500 text-lg">Discovery & Configuration</p>
+            </div>
+            <div class="text-right">
+                <div id="dealNameDisplay" class="font-bold text-slate-700">Loading...</div>
+                <div id="quoteIdDisplay" class="text-xs text-slate-400 font-mono mt-1">Ref: --</div>
+            </div>
+        </header>
+
+        <div class="max-w-4xl space-y-8">
+            <div class="section-card">
+                <div class="step-header"><div><h2 class="step-title">User Licenses</h2></div><span class="step-subtitle">Step 01</span></div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between input-group">
+                        <div class="pr-4"><label class="label-main">Standard Users</label><span class="label-sub">Common areas, lobby phones.</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean license-trigger" type="number" id="standardUsers" placeholder="0" min="0"><span class="price-tag" id="price_stdUser">...</span></div>
+                    </div>
+                    <div class="flex items-center justify-between input-group">
+                        <div class="pr-4"><label class="label-main">Advanced Users</label><span class="label-sub">Office staff, sales, remote.</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean license-trigger" type="number" id="advancedUsers" placeholder="0" min="0"><span class="price-tag" id="price_advUser">...</span></div>
+                    </div>
+                    <div class="flex items-center justify-between input-group border-l-4 border-l-indigo-500">
+                        <div class="pr-4"><label class="label-main text-indigo-900">Contact Center Agents</label><span class="label-sub text-indigo-700/70">Queues & Analytics.</span></div>
+                        <div class="flex flex-col items-end"><input class="calc-trigger input-clean border-indigo-200" type="number" id="ccAgents" placeholder="0" min="0"><span class="price-tag text-indigo-600" id="price_ccAgent">...</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="step-header"><div><h2 class="step-title">Connectivity & Numbers</h2></div><span class="step-subtitle">Step 02</span></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="border rounded-lg p-4 bg-slate-50">
+                        <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-400">Local DIDs</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20" type="number" id="portLocal" placeholder="Qty"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">New ($1)</label><input class="calc-trigger input-clean w-20" type="number" id="newLocal" placeholder="Qty"></div>
+                        </div>
+                    </div>
+                    <div class="border rounded-lg p-4 bg-slate-50">
+                        <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-400">Toll-Free</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center"><label class="text-sm">Porting</label><input class="calc-trigger input-clean w-20" type="number" id="portTF" placeholder="Qty"></div>
+                            <div class="flex justify-between items-center"><label class="text-sm">New ($1)</label><input class="calc-trigger input-clean w-20" type="number" id="newTF" placeholder="Qty"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between border-l-4 border-blue-500 bg-blue-50 p-4 rounded mb-6">
+                    <div><label class="font-bold text-sm text-blue-900">Est. Monthly TF Minutes</label></div>
+                    <div class="flex flex-col items-end">
+                         <input class="calc-trigger input-clean w-24 border-blue-200" type="number" id="tfMinutes" placeholder="0">
+                         <span class="text-[10px] text-blue-500 font-bold mt-1">$15/500min bundle</span>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-4 bg-slate-50">
+                    <label class="flex cursor-pointer items-center justify-between">
+                        <span class="font-bold text-sm text-slate-800">Enable SIP Trunking?</span>
+                        <input class="calc-trigger w-5 h-5" type="checkbox" id="sipTrunkingToggle">
+                    </label>
+                    <div class="hidden mt-4 pt-4 border-t border-slate-200" id="sipDetails">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm">Call Paths (Channels)</label>
+                            <input class="input-clean calc-trigger" type="number" id="sipChannels" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="step-header"><div><h2 class="step-title">Hardware</h2></div><span class="step-subtitle">Step 03</span></div>
+                
+                <div class="flex items-center justify-between bg-yellow-50 border border-yellow-200 p-4 rounded mb-6">
+                    <div><span class="font-bold text-sm text-yellow-800">Customer has Ethernet Cabling?</span><span class="block text-xs text-yellow-600">Uncheck to trigger Site Survey.</span></div>
+                    <input class="calc-trigger w-5 h-5 text-yellow-600" type="checkbox" id="hasCabling" checked>
+                </div>
+
+                <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-4 rounded mb-6">
+                    <div><span class="font-bold text-sm text-slate-800">Customer Provided PoE?</span><span class="block text-xs text-slate-500">Uncheck to add Power Supplies.</span></div>
+                    <input class="calc-trigger w-5 h-5" type="checkbox" id="customerPoE" checked>
+                </div>
+
+                <div class="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                    <div class="flex flex-col">
+                        <label class="font-bold text-sm text-center mb-1">Basic Phone</label>
+                        <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwBasic">...</span>
+                        <input class="calc-trigger input-col" type="number" id="hwBasic" placeholder="0">
+                        <div class="acc-panel">
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input" type="number" id="mount_basic" placeholder="0"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input" type="number" id="psu_basic" placeholder="0"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="font-bold text-sm text-center mb-1">Office Phone</label>
+                        <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwOffice">...</span>
+                        <input class="calc-trigger input-col" type="number" id="hwOffice" placeholder="0">
+                        <div class="acc-panel">
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input" type="number" id="mount_office" placeholder="0"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input" type="number" id="psu_office" placeholder="0"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="font-bold text-sm text-center mb-1">Exec Phone</label>
+                        <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwExec">...</span>
+                        <input class="calc-trigger input-col" type="number" id="hwExec" placeholder="0">
+                        <div class="acc-panel">
+                            <div class="mb-2"><span class="acc-label">Mount</span><input class="calc-trigger acc-input" type="number" id="mount_exec" placeholder="0"></div>
+                            <div><span class="acc-label">PSU</span><input class="calc-trigger acc-input" type="number" id="psu_exec" placeholder="0"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="font-bold text-sm text-center mb-1">Conf Phone</label>
+                        <span class="text-[10px] text-center text-slate-400 mb-2" id="price_hwConf">...</span>
+                        <input class="calc-trigger input-col" type="number" id="hwConf" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-100">
+                    <div>
+                        <label class="label-main">Cordless Handsets</label>
+                        <span class="label-sub">Auto-calculates Base Kits (1 per 10).</span>
+                        <div class="flex items-center gap-2">
+                             <input class="calc-trigger input-clean w-full" type="number" id="hwCordless" placeholder="Qty">
+                             <span class="text-xs font-bold text-purple-600" id="cordlessCalc"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="label-main">Sidecars</label>
+                        <span class="label-sub">Requires Power Supply (Auto-added).</span>
+                        <input class="calc-trigger input-clean w-full" type="number" id="sidecars" placeholder="Qty">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                 <div class="step-header"><div><h2 class="step-title">Analog & Digital</h2></div><span class="step-subtitle">Step 04</span></div>
+                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                     <div class="border rounded-lg p-4 bg-emerald-50 border-emerald-100">
+                         <div class="flex items-center justify-between mb-2"><label class="font-bold text-sm text-emerald-800">E-Fax (Webfax)</label><span class="text-xs font-bold text-emerald-600" id="price_webfax">...</span></div>
+                         <input class="calc-trigger input-clean w-full border-emerald-200" type="number" id="webfaxQty" placeholder="Qty">
+                     </div>
+                     <div class="border rounded-lg p-4 bg-red-50 border-red-100">
+                         <div class="flex items-center justify-between mb-2"><label class="font-bold text-sm text-red-800">Physical Fax (Analog)</label><span class="text-xs font-bold text-red-600" id="price_pots">...</span></div>
+                         <input class="calc-trigger input-clean w-full border-red-200" type="number" id="physicalFaxQty" placeholder="Qty">
+                         <p class="mt-2 text-[10px] text-center text-red-600">Includes 1 ATA per Line</p>
+                     </div>
+                 </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="flex flex-col bg-slate-900 h-screen lg:col-span-4 lg:p-8 overflow-y-auto p-6 shadow-2xl sticky top-0 xl:col-span-3 text-slate-300">
+        <div class="border-slate-700 border-b mb-8 pb-6">
+            <h2 class="font-bold text-white text-xl tracking-wide">Quote Summary</h2>
+            <div class="text-xs text-slate-500 tracking-wider uppercase font-mono mt-1">Live Estimate</div>
+        </div>
+        
+        <div class="flex-1 space-y-6">
+            <div>
+                <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-500">Monthly Recurring</h3>
+                <div class="space-y-1" id="mrcList"><div class="text-sm italic text-slate-600">No items...</div></div>
+                <div class="flex items-center justify-between border-slate-700 border-t mt-3 pt-3"><span class="text-sm text-slate-400">Total MRC</span><span class="font-bold text-lg text-blue-400" id="totalMRC">$0.00</span></div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Deployment</span>
+                    <span class="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-full" id="deployCountBadge">0 Dev</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" id="includeInstall" class="calc-trigger rounded text-blue-500 bg-slate-700 border-slate-600">
+                        <span class="text-sm font-bold text-slate-200">Include Install?</span>
+                    </label>
+                    <span class="text-[10px] font-bold text-slate-500" id="installStatusText">OPTIONAL</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-500">One-Time Costs</h3>
+                <div class="space-y-1" id="otcList"><div class="text-sm italic text-slate-600">No items...</div></div>
+                <div class="flex items-center justify-between border-slate-700 border-t mt-3 pt-3"><span class="text-sm text-slate-400">Total OTC</span><span class="font-bold text-lg text-orange-400" id="totalOTC">$0.00</span></div>
+            </div>
+        </div>
+
+        <div class="border-slate-700 border-t mt-8 pt-6">
+            <button onclick="handleSaveAndFinish()" class="flex items-center font-bold bg-green-600 gap-3 hover:bg-green-500 justify-center px-4 py-4 rounded-lg shadow-lg text-white w-full transition-all">
+                <span>Save & Generate Quote</span>
+                <span class="text-xl">&#8594;</span>
+            </button>
+            <button onclick="calculateQuote()" class="w-full mt-4 text-xs font-bold text-slate-600 hover:text-white uppercase">Refresh Calc</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. INVENTORY CONTROLLER ---
+    // Fetches live CRM products and finds the lowest price per category/type.
+    
+    let INVENTORY = {}; 
+    let DEAL_ID = null;
+    let DEAL_RECORD = null;
+
+    // Mapping Logic: UI Key -> { Category, HardwareType/SoftwareType, DefaultPrice(Fallback) }
+    const PRODUCT_MAP = {
+        'stdUser':   { cat: 'VoiceOS', type: 'VoiceOS STD', fallback: 21.0 },
+        'advUser':   { cat: 'VoiceOS', type: 'VoiceOS ADV', fallback: 29.0 },
+        'ccAgent':   { cat: 'VoiceOS', type: 'VoiceOS CC',  fallback: 55.0 },
+        
+        'onb_std':   { name: 'Onboarding_VoiceOS-STD', fallback: 12.0 },
+        'onb_adv':   { name: 'Onboarding_VoiceOS-ADV', fallback: 14.0 },
+        'onb_cc':    { name: 'Onboarding_VoiceOS-CC',  fallback: 25.0 },
+        'onb_pots':  { name: 'Onboarding_VoiceOS-POTS', fallback: 126.0 },
+
+        'hwBasic':   { cat: 'Standard Phones', fallback: 139.0 },
+        'hwOffice':  { cat: 'Office Phones',   fallback: 165.0 }, // If missing, handled by fallback logic
+        'hwExec':    { cat: 'Executive Phones',fallback: 205.0 },
+        'hwConf':    { cat: 'Conference Phones',fallback: 630.0 },
+        
+        'cordlessH': { cat: 'Cordless Phones', type: 'Cordless Handset', fallback: 129.0 },
+        'cordlessB': { cat: 'Cordless Phones', type: 'Cordless Base',    fallback: 129.0 }, // Base Kit
+        
+        'mount':     { cat: 'Phone Misc', type: 'Wall Mount', fallback: 10.0 },
+        'psu':       { cat: 'Phone Misc', type: 'Power Supply', fallback: 12.0 },
+        'sidecar':   { cat: 'Phone Misc', type: 'Sidecar', fallback: 125.0 },
+        
+        'webfax':    { cat: 'VoiceOS', type: 'VoiceOS Other', nameMatch: 'Webfax', fallback: 14.0 },
+        'pots':      { cat: 'VoiceOS', type: 'VoiceOS POTS', fallback: 32.0 },
+        
+        'ata':       { cat: 'ATA', fallback: 43.85 },
+        
+        'labor':     { sku: 'AMP_PS_STD_FC', fallback: 200.0 }, // On-Site Install
+        'survey':    { sku: 'AMP_PS_SVY_FC', fallback: 164.0 }, // Site Survey
+        
+        'tfBundle':  { name: 'Toll-Free Bundle', fallback: 15.0 },
+        'sipChan':   { name: 'SIP Trunking (Standard)', fallback: 24.99 },
+        'sipSetup':  { name: 'SIP Trunk Activation', fallback: 12.0 },
+        
+        'didNew':    { name: 'DID Local', fallback: 1.0 },
+        'didPort':   { name: 'LNP Local', fallback: 1.0 },
+        'tfNew':     { name: 'DID TF', fallback: 1.0 },
+        'tfPort':    { name: 'LNP TF', fallback: 1.0 }
+    };
+
+    // Store found products { id, name, price, sku }
+    let SELECTED_PRODUCTS = {};
+
+    ZOHO.embeddedApp.on("PageLoad", function(data){
+        if(data && data.EntityId) {
+            DEAL_ID = Array.isArray(data.EntityId) ? data.EntityId[0] : data.EntityId;
+            initWidget();
+        }
+    });
+
+    ZOHO.embeddedApp.init();
+
+    async function initWidget() {
+        showLoader(true, "Loading Deal & Inventory...");
+        
+        // Parallel Fetch: Deal Data + All Products
+        try {
+            const [dealResp, prodResp] = await Promise.all([
+                ZOHO.CRM.API.getRecord({ Entity: "Deals", RecordID: DEAL_ID }),
+                ZOHO.CRM.API.getAllRecords({ Entity: "Products", sort_order: "asc", per_page: 200 })
+            ]);
+
+            if(dealResp.data) {
+                DEAL_RECORD = dealResp.data[0];
+                document.getElementById('dealNameDisplay').innerText = DEAL_RECORD.Deal_Name;
+                document.getElementById('quoteIdDisplay').innerText = "Deal ID: " + DEAL_ID;
+            }
+
+            if(prodResp.data) {
+                processInventory(prodResp.data);
+            } else {
+                console.warn("No Products Found. Using Fallbacks.");
+            }
+            
+            // Pre-fill UI from Deal Record if data exists
+            populateUI();
+            
+            showLoader(false);
+            calculateQuote(); // Initial Calc
+
+        } catch (e) {
+            console.error(e);
+            alert("Error Loading Data: " + e.message);
+            showLoader(false);
+        }
+    }
+
+    function processInventory(products) {
+        // Group products by Category -> Type -> Price
+        // Goal: Find Lowest Price matching our criteria
+        
+        // Helper to match logic
+        const findBest = (key, criteria) => {
+            let candidates = products.filter(p => p.Product_Active); // Ensure active
+            
+            if(criteria.sku) {
+                let match = candidates.find(p => p.Product_Code === criteria.sku);
+                if(match) return match;
+            }
+
+            if(criteria.cat) {
+                candidates = candidates.filter(p => p.CF_CRM_Category === criteria.cat || p.Product_Category === criteria.cat);
+            }
+            
+            if(criteria.type) {
+                // Check Hardware Type OR Software Type
+                candidates = candidates.filter(p => 
+                    (p.CF_Hardware_Type === criteria.type) || 
+                    (p.CF_Software_Type === criteria.type)
+                );
+            }
+            
+            if(criteria.nameMatch) {
+                candidates = candidates.filter(p => p.Product_Name.includes(criteria.nameMatch));
+            } else if (criteria.name) {
+                 candidates = candidates.filter(p => p.Product_Name === criteria.name);
+            }
+
+            // Sort by Price Ascending
+            candidates.sort((a,b) => (a.Unit_Price||0) - (b.Unit_Price||0));
+            
+            return candidates.length > 0 ? candidates[0] : null;
+        };
+
+        // Populate SELECTED_PRODUCTS
+        for (let key in PRODUCT_MAP) {
+            let criteria = PRODUCT_MAP[key];
+            let winner = findBest(key, criteria);
+            if(winner) {
+                SELECTED_PRODUCTS[key] = {
+                    id: winner.id,
+                    name: winner.Product_Name,
+                    price: winner.Unit_Price || 0,
+                    sku: winner.Product_Code || ""
+                };
+            } else {
+                // FALLBACK
+                SELECTED_PRODUCTS[key] = {
+                    id: null,
+                    name: criteria.name || criteria.type || key,
+                    price: criteria.fallback,
+                    sku: "MISSING-SKU"
+                };
+            }
+        }
+        
+        // Update UI Prices
+        setText('price_stdUser', `$${fmt(SELECTED_PRODUCTS.stdUser.price)}`);
+        setText('price_advUser', `$${fmt(SELECTED_PRODUCTS.advUser.price)}`);
+        setText('price_ccAgent', `$${fmt(SELECTED_PRODUCTS.ccAgent.price)}`);
+        setText('price_hwBasic', `$${fmt(SELECTED_PRODUCTS.hwBasic.price)}`);
+        setText('price_hwOffice',`$${fmt(SELECTED_PRODUCTS.hwOffice.price)}`);
+        setText('price_hwExec',  `$${fmt(SELECTED_PRODUCTS.hwExec.price)}`);
+        setText('price_hwConf',  `$${fmt(SELECTED_PRODUCTS.hwConf.price)}`);
+        setText('price_pots',    `$${fmt(SELECTED_PRODUCTS.pots.price)}`);
+        setText('price_webfax',  `$${fmt(SELECTED_PRODUCTS.webfax.price)}`);
+    }
+
+    function populateUI() {
+        if(!DEAL_RECORD) return;
+        setVal('standardUsers', DEAL_RECORD.Standard_Qty);
+        setVal('advancedUsers', DEAL_RECORD.Advanced_Qty);
+        setVal('ccAgents', DEAL_RECORD.Contact_Center_Qty); // Using v58 name
+        setVal('tfMinutes', DEAL_RECORD.Est_Toll_Free_Minutes);
+        setVal('portLocal', DEAL_RECORD.Porting_DID_Qty);
+        setVal('newLocal', DEAL_RECORD.New_DID_Qty);
+        setVal('portTF', DEAL_RECORD.Porting_TFN_Qty);
+        setVal('newTF', DEAL_RECORD.New_TFN_Qty);
+        
+        // Checkboxes
+        if(DEAL_RECORD.On_Site_Install === "Yes") document.getElementById('includeInstall').checked = true;
+        
+        // Note: Hardware counts are not typically stored in simple fields in v58, 
+        // they are in the subform. For V1 we assume clean slate or user re-enters.
+    }
+
+    // --- 2. CALCULATOR LOGIC ---
+    
+    // Listeners
+    document.querySelectorAll('.calc-trigger').forEach(el => {
+        el.addEventListener('change', calculateQuote);
+        el.addEventListener('input', calculateQuote);
+    });
+
+    document.getElementById('customerPoE').addEventListener('change', (e) => {
+        // Soft Logic: If PoE Checked, clear Phone PSUs, but allow user to add back
+        if(e.target.checked) {
+            setVal('psu_basic', 0);
+            setVal('psu_office', 0);
+            setVal('psu_exec', 0);
+        } else {
+            // Restore? No, user must enter. Simpler.
+        }
+        calculateQuote();
+    });
+
+    let QUOTE_ITEMS = { mrc: [], nrc: [] };
+    let HARDWARE_ROWS = []; // For Subform
+
+    function calculateQuote() {
+        QUOTE_ITEMS = { mrc: [], nrc: [] };
+        HARDWARE_ROWS = [];
+        let mrcTotal = 0; 
+        let nrcTotal = 0;
+
+        // Helpers
+        const addMrc = (key, qty, isExcess) => {
+             if(qty <= 0) return;
+             let p = SELECTED_PRODUCTS[key];
+             let rate = isExcess ? 1.00 : p.price; // DID Excess Logic
+             let lineTotal = qty * rate;
+             mrcTotal += lineTotal;
+             QUOTE_ITEMS.mrc.push({ name: p.name, qty: qty, price: rate, sku: p.sku });
+        };
+        const addNrc = (key, qty, customPrice) => {
+             if(qty <= 0) return;
+             let p = SELECTED_PRODUCTS[key];
+             let rate = customPrice !== undefined ? customPrice : p.price;
+             let lineTotal = qty * rate;
+             nrcTotal += lineTotal;
+             QUOTE_ITEMS.nrc.push({ name: p.name, qty: qty, price: rate, sku: p.sku });
+             
+             // Setup subform item for later
+             if(key.startsWith('hw') || key === 'ata' || key === 'mount' || key === 'psu' || key === 'sidecar' || key.startsWith('cordless')) {
+                 HARDWARE_ROWS.push({ 
+                     "Phone_Selection": p.id, 
+                     "Phone_Qty": qty, 
+                     "Price": rate 
+                 });
+             }
+        };
+
+        // 1. LICENSES & ONBOARDING
+        const std = val('standardUsers');
+        const adv = val('advancedUsers');
+        const cc  = val('ccAgents');
+        
+        addMrc('stdUser', std); addNrc('onb_std', std);
+        addMrc('advUser', adv); addNrc('onb_adv', adv);
+        addMrc('ccAgent', cc);  addNrc('onb_cc', cc);
+
+        // 2. DIDs (Entitlements)
+        const totalSeats = std + adv + cc;
+        const portL = val('portLocal'); const newL = val('newLocal');
+        const portT = val('portTF');    const newT = val('newTF');
+        
+        let remainingEntitlement = totalSeats;
+        
+        // Priority: Porting Local -> New Local -> Port TF -> New TF
+        // Actually v58 spec was fuzzy, we will use Standard "First N Free" logic
+        
+        // Calculate Billable DIDs
+        let totalDIDs = portL + newL + portT + newT;
+        let freeDIDs = Math.min(totalDIDs, remainingEntitlement);
+        let billableDIDs = Math.max(0, totalDIDs - remainingEntitlement);
+        
+        // Logic: We just add them all at $0 then add "Excess" line? 
+        // No, cleaner to add specific lines.
+        // Simplified: Add all as items. If Entitlement, set rate 0.
+        // Implementation: We will use the generic "Excess DID" rate of $1 for billable.
+        
+        // For Quote Presentation: 
+        // We will just add them as Line Items. 
+        // If (qty <= Entitlements), price = 0.
+        
+        // Logic specific to v58:
+        // "Entitlements" field isn't in UI, so we calculate dynamic entitlement.
+        
+        // Let's just create line items.
+        // We'll trust the v58 logic: Add items, backend/payload handles logic? 
+        // NO, we are replacing logic.
+        
+        // Simple View:
+        let usedEnt = 0;
+        const handleDid = (key, qty, typeName) => {
+            if(qty <= 0) return;
+            let free = Math.max(0, Math.min(qty, totalSeats - usedEnt));
+            let paid = qty - free;
+            usedEnt += free;
+            
+            if(free > 0) QUOTE_ITEMS.mrc.push({ name: typeName + " (Included)", qty: free, price: 0, sku: "DID-INC", isEntitlement: true });
+            if(paid > 0) QUOTE_ITEMS.mrc.push({ name: typeName + " (Excess)", qty: paid, price: 1.00, sku: "DID-EXC", isExcess: true });
+            mrcTotal += (paid * 1.00);
+            
+            // Setup Fees
+            if(key === 'didNew' || key === 'tfNew') {
+                // $1 setup for Local, $2 for TF? Map says $1 fallback. 
+                // Let's use map price.
+                addNrc(key, qty);
+            }
+        };
+        
+        handleDid('didPort', portL, "LNP Local");
+        handleDid('didNew',  newL,  "New Local");
+        handleDid('tfPort',  portT, "LNP Toll-Free");
+        handleDid('tfNew',   newT,  "New Toll-Free");
+
+        // TF Bundles
+        let tfMin = val('tfMinutes');
+        if(tfMin > 0) {
+            let bundles = Math.ceil(tfMin / 500);
+            addMrc('tfBundle', bundles);
+        }
+
+        // 3. HARDWARE
+        addNrc('hwBasic', val('hwBasic'));
+        addNrc('hwOffice',val('hwOffice'));
+        addNrc('hwExec',  val('hwExec'));
+        addNrc('hwConf',  val('hwConf'));
+
+        // Cordless Logic
+        let cordUser = val('hwCordless');
+        if(cordUser > 0) {
+            let kits = Math.ceil(cordUser / 10.0); // 1 Base per 10
+            let extraHandsets = Math.max(0, cordUser - kits); // Kit includes 1 HS
+            
+            // Actually user said "Kit includes HS".
+            // So if 12 users: 2 Kits (covers 2 users, supports 20). 10 Extra Handsets.
+            
+            addNrc('cordlessB', kits); // Base Kits
+            addNrc('cordlessH', extraHandsets);
+            
+            document.getElementById('cordlessCalc').innerText = `(${kits} Kits + ${extraHandsets} HS)`;
+        } else {
+            document.getElementById('cordlessCalc').innerText = "";
+        }
+        
+        // Accessories
+        let mounts = val('mount_basic') + val('mount_office') + val('mount_exec');
+        addNrc('mount', mounts);
+        
+        let psus = val('psu_basic') + val('psu_office') + val('psu_exec');
+        addNrc('psu', psus);
+        
+        let side = val('sidecars');
+        if(side > 0) {
+            addNrc('sidecar', side);
+            addNrc('psu', side); // 1 PSU per sidecar always
+        }
+
+        // 4. ANALOG / FAX
+        let efax = val('webfaxQty');
+        addMrc('webfax', efax); addNrc('onb_adv', efax); // Webfax uses ADV setup
+        
+        let pots = val('physicalFaxQty');
+        if(pots > 0) {
+            addMrc('pots', pots);
+            addNrc('onb_pots', pots); // $126 Setup
+            addNrc('ata', pots);      // 1 ATA per Line
+        }
+
+        // 5. DEPLOYMENT
+        let cabling = document.getElementById('hasCabling').checked;
+        let install = document.getElementById('includeInstall').checked;
+        
+        let totalDevices = val('hwBasic') + val('hwOffice') + val('hwExec') + val('hwConf') + val('hwCordless') + pots + side; 
+        // Note: ATA is a device, Cordless Handsets are devices.
+        
+        document.getElementById('deployCountBadge').innerText = totalDevices + " Devices";
+
+        if(!cabling) {
+            addNrc('survey', 1);
+        }
+
+        if(install && totalDevices > 0) {
+            // Formula: ceil(Total / 5) hours
+            let hours = Math.ceil(totalDevices / 5.0);
+            addNrc('labor', hours);
+            document.getElementById('installStatusText').innerText = `${hours} Hours`;
+            document.getElementById('installStatusText').className = "text-xs font-bold text-green-500";
+        } else {
+            document.getElementById('installStatusText').innerText = "OPTIONAL";
+            document.getElementById('installStatusText').className = "text-[10px] font-bold text-slate-500";
+        }
+        
+        // SIP TRUNKING
+        if(document.getElementById('sipTrunkingToggle').checked) {
+            let chans = val('sipChannels');
+            addMrc('sipChan', chans);
+            addNrc('sipSetup', 1); // Flat setup? Or per chan? Map said $12. Assuming flat.
+        }
+
+        // RENDER TOTALS
+        document.getElementById('totalMRC').innerText = `$${fmt(mrcTotal)}`;
+        document.getElementById('totalOTC').innerText = `$${fmt(nrcTotal)}`;
+        
+        renderList('mrcList', QUOTE_ITEMS.mrc);
+        renderList('otcList', QUOTE_ITEMS.nrc);
+    }
+
+    function renderList(id, items) {
+        let h = items.map(i => `<div class="summary-row"><span class="summary-label text-xs w-2/3">${i.name} ${i.qty>1?'('+i.qty+')':''}</span><span class="summary-val">$${fmt(i.qty*i.price)}</span></div>`).join('');
+        document.getElementById(id).innerHTML = h || '<div class="text-sm italic text-slate-600">No items...</div>';
+    }
+
+    // --- 3. SAVE & EXECUTE ---
+
+    async function handleSaveAndFinish() {
+        if(!confirm("Generate Quote and Update Deal?")) return;
+        
+        showLoader(true, "Saving Configuration...");
+
+        try {
+            // A. Update Deal Fields
+            let dealUpdate = {
+                id: DEAL_ID,
+                Standard_Qty: val('standardUsers'),
+                Advanced_Qty: val('advancedUsers'),
+                Contact_Center_Qty: val('ccAgents'),
+                Est_Toll_Free_Minutes: val('tfMinutes'),
+                Porting_DID_Qty: val('portLocal'),
+                New_DID_Qty: val('newLocal'),
+                Porting_TFN_Qty: val('portTF'),
+                New_TFN_Qty: val('newTF'),
+                SIP_Trunks_Qty: document.getElementById('sipTrunkingToggle').checked ? val('sipChannels') : 0,
+                Webfax: val('webfaxQty'), // Map Check
+                Analog_Line_Count: val('physicalFaxQty'),
+                Survey_Required: document.getElementById('hasCabling').checked ? "No" : "Yes",
+                On_Site_Install: document.getElementById('includeInstall').checked ? "Yes" : "No",
+                Phone_Hardware: HARDWARE_ROWS // Replaces Subform
+            };
+
+            // B. Build Payload
+            let payload = {
+                quote_ref: document.getElementById('quoteIdDisplay').innerText,
+                generated_at: new Date().toISOString(),
+                crm_opportunity_id: DEAL_ID,
+                items: [...QUOTE_ITEMS.mrc.map(i=>({...i, type:"MRC"})), ...QUOTE_ITEMS.nrc.map(i=>({...i, type:"NRC"}))]
+            };
+            
+            dealUpdate.Quote_JSON_Payload = JSON.stringify(payload);
+            dealUpdate.QuoteGen = true; // Trigger Backend Workflow
+
+            // EXECUTE UPDATE
+            await ZOHO.CRM.API.updateRecord({ Entity: "Deals", APIData: dealUpdate });
+            
+            // C. PDF Generation
+            showLoader(true, "Generating PDF...");
+            await generatePDF();
+            
+            // D. Smart Polling
+            showLoader(true, "Waiting for Zoho Books...");
+            await waitForBackend();
+
+            // E. Blueprint Advance
+            showLoader(true, "Finalizing Deal...");
+            // Trigger Blueprint Transition 'Proceed'
+            // We just try to proceed. Logic relies on Backend having set QuoteLink.
+            
+            let transitionData = {}; 
+            // Add mandatory fields if blueprint requires them (Next_Step, etc)
+            // Just basic proceed for now
+            
+            try {
+                await ZOHO.CRM.BLUEPRINT.proceed({ transition_id: "Proceed", data: transitionData });
+            } catch(bpError) {
+                console.warn("Blueprint Warning (May not be in transition state):", bpError);
+            }
+
+            // F. Refresh
+            ZOHO.CRM.UI.Record.open({ Entity: "Deals", RecordID: DEAL_ID })
+                .then(() => ZOHO.CRM.UI.Popup.close());
+
+        } catch (e) {
+            console.error(e);
+            alert("Save Failed: " + e.message);
+            showLoader(false);
+        }
+    }
+
+    function waitForBackend() {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            const check = () => {
+                attempts++;
+                ZOHO.CRM.API.getRecord({ Entity: "Deals", RecordID: DEAL_ID }).then(r => {
+                     if(r.data && r.data[0].QuoteGen === false) {
+                         resolve();
+                     } else {
+                         if(attempts > 20) resolve(); // Timeout but proceed manually
+                         else setTimeout(check, 1000);
+                     }
+                });
+            };
+            setTimeout(check, 2000);
+        });
+    }
+
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        let element = document.getElementById('quoteContainer');
+        
+        // Temporarily hide action buttons for PDF if needed, or just capture left col
+        // Using html2canvas
+        let canvas = await html2canvas(element, { scale: 1.5 });
+        let imgData = canvas.toDataURL('image/jpeg', 0.95);
+        
+        let pdf = new jsPDF('p', 'mm', 'a4');
+        let pdfWidth = pdf.internal.pageSize.getWidth();
+        let pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Quote_${DEAL_RECORD.Deal_Name.replace(/\W/g,'_')}.pdf`);
+    }
+
+    // Utils
+    function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+    function setVal(id, v) { if(document.getElementById(id)) document.getElementById(id).value = v || ""; }
+    function fmt(n) { return (n||0).toFixed(2); }
+    function setText(id, t) { if(document.getElementById(id)) document.getElementById(id).innerText = t; }
+    function showLoader(s, t) {
+        document.getElementById('loader').style.display = s?'block':'none';
+        if(t) document.getElementById('loaderText').innerText = t;
+    }
+
+</script>
+</body>
+</html>
