@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style type="text/tailwindcss">
         body{font-family:'Inter',sans-serif;background-color:#f8fafc}
@@ -32,11 +32,14 @@
         .acc-input{@apply w-full text-xs border-slate-200 rounded p-1 text-center font-semibold focus:ring-1 focus:ring-blue-500 outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400}
         
         /* PDF TEMPLATE STYLES */
-        .pdf-container { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
+        .pdf-container { font-family: 'Inter', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
         
         /* PDF Header Layout */
         .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .pdf-logo { height: 50px; width: auto; display: block; object-fit: contain; }
+        
+        /* TEXT LOGO REPLACEMENT */
+        .pdf-logo-text { font-size: 36px; font-weight: 900; color: #0f172a; letter-spacing: -1px; margin: 0; line-height: 1; font-family: 'Inter', sans-serif; }
+        
         .pdf-meta { text-align: right; font-size: 14px; color: #555; line-height: 1.6; }
         .pdf-title-row { margin-bottom: 20px; }
         .pdf-doc-title { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
@@ -69,12 +72,12 @@
             </div>
             <div class="text-right">
                 <div id="recordNameDisplay" class="font-bold text-slate-700">Lead: ...</div>
+                <div id="companyDisplay" class="text-sm text-slate-500 font-semibold">...</div>
                 <div id="dateDisplay" class="text-xs text-slate-400 font-mono mt-1">Date: --</div>
             </div>
         </header>
 
         <div class="max-w-4xl space-y-8">
-            
             <div class="section-card">
                 <div class="step-header"><div><h2 class="step-title">User Licenses</h2></div><span class="step-subtitle">Step 01</span></div>
                 <div class="space-y-4">
@@ -95,7 +98,6 @@
 
             <div class="section-card">
                 <div class="step-header"><div><h2 class="step-title">Connectivity & Numbers</h2></div><span class="step-subtitle">Step 02</span></div>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="border rounded-lg p-4 bg-slate-50">
                         <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-400">Local DIDs</h3>
@@ -112,7 +114,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="tfMinutesRow" class="hidden flex items-center justify-between border-l-4 border-blue-500 bg-blue-50 p-4 rounded mb-6">
                     <div><label class="font-bold text-sm text-blue-900">Est. Monthly TF Minutes</label></div>
                     <div class="flex flex-col items-end">
@@ -120,7 +121,6 @@
                          <span class="text-[10px] text-blue-500 font-bold mt-1">$15/500min bundle</span>
                     </div>
                 </div>
-
                 <div class="border rounded-lg p-4 bg-slate-50">
                     <label class="flex cursor-pointer items-center justify-between">
                         <span class="font-bold text-sm text-slate-800">Enable SIP Trunking?</span>
@@ -141,12 +141,10 @@
 
             <div class="section-card">
                 <div class="step-header"><div><h2 class="step-title">Hardware</h2></div><span class="step-subtitle">Step 03</span></div>
-                
                 <div class="flex items-center justify-between bg-slate-50 border border-slate-200 p-4 rounded mb-6">
                     <div><span class="font-bold text-sm text-slate-800">Customer Provided PoE?</span><span class="block text-xs text-slate-500">If unchecked, PSUs are MANDATORY.</span></div>
                     <input class="calc-trigger w-5 h-5" type="checkbox" id="customerPoE" checked>
                 </div>
-
                 <div class="grid gap-4 grid-cols-2 lg:grid-cols-4">
                     <div class="flex flex-col">
                         <label class="font-bold text-sm text-center mb-1">Basic Phone</label>
@@ -184,7 +182,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-100">
                     <div>
                         <label class="label-main">Cordless Handsets</label>
@@ -197,7 +194,6 @@
                         <input class="calc-trigger input-clean w-full" type="number" id="sidecars" placeholder="Qty" min="0">
                     </div>
                 </div>
-                
                 <div class="mt-4 border-t pt-4">
                      <label class="label-main">Headsets</label>
                      <input class="calc-trigger input-clean" type="number" id="hwHeadsets" placeholder="Qty" min="0">
@@ -216,7 +212,6 @@
                          <input class="calc-trigger input-clean w-full border-red-200 license-trigger" type="number" id="physicalFaxQty" placeholder="Qty" min="0">
                      </div>
                  </div>
-                 
                  <div class="mt-4 border rounded-lg p-4 bg-amber-50 border-amber-100 flex justify-between items-center">
                      <div>
                          <label class="font-bold text-sm text-amber-800">Paging/Analog Extensions</label>
@@ -225,7 +220,6 @@
                      <input class="calc-trigger input-clean border-amber-200 license-trigger" type="number" id="pagingQty" placeholder="Qty" min="0">
                  </div>
             </div>
-
         </div>
     </div>
 
@@ -234,20 +228,17 @@
             <h2 class="font-bold text-white text-xl tracking-wide">Quote Summary</h2>
             <div class="text-xs text-slate-500 tracking-wider uppercase font-mono mt-1">Lead Estimation</div>
         </div>
-        
         <div class="flex-1 space-y-6">
             <div>
                 <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-500">Monthly Recurring</h3>
                 <div class="space-y-1" id="mrcList"><div class="text-sm italic text-slate-600">No items...</div></div>
                 <div class="flex items-center justify-between border-slate-700 border-t mt-3 pt-3"><span class="text-sm text-slate-400">Total MRC</span><span class="font-bold text-lg text-blue-400" id="totalMRC">$0.00</span></div>
             </div>
-
             <div class="bg-slate-800 border border-slate-700 rounded-lg p-4">
                 <div class="flex justify-between items-center mb-3">
                     <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Deployment</span>
                     <span class="bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-full" id="totalDeviceCount">0 Devices</span>
                 </div>
-                
                 <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-700/50">
                     <label class="flex items-center space-x-2 cursor-pointer">
                         <input type="checkbox" id="includeInstall" class="calc-trigger rounded text-blue-500 bg-slate-700 border-slate-600">
@@ -257,22 +248,17 @@
                 </div>
                 <div id="deployMsg" class="text-[10px] text-right text-slate-500 mt-1"></div>
             </div>
-
             <div>
                 <h3 class="font-bold text-xs tracking-wider uppercase mb-3 text-slate-500">One-Time Costs</h3>
                 <div class="space-y-1" id="otcList"><div class="text-sm italic text-slate-600">No items...</div></div>
                 <div class="flex items-center justify-between border-slate-700 border-t mt-3 pt-3"><span class="text-sm text-slate-400">Total OTC</span><span class="font-bold text-lg text-orange-400" id="totalOTC">$0.00</span></div>
             </div>
-            
             <div id="licenseError" class="hidden bg-red-900/90 border border-red-500 p-3 rounded text-sm text-red-100 mt-4">
-                <div class="font-bold flex items-center gap-2">
-                    <span>&#9888; Invalid Configuration</span>
-                </div>
+                <div class="font-bold flex items-center gap-2"><span>&#9888; Invalid Configuration</span></div>
                 <div class="mt-1 text-xs opacity-80">Phone count (<span id="errEndCount">0</span>) exceeds License count (<span id="errLicCount">0</span>).</div>
                 <button onclick="overrideLock()" class="mt-3 w-full text-xs bg-red-800 hover:bg-red-700 border border-red-600 py-1 rounded">Unlock / Override</button>
             </div>
         </div>
-
         <div class="border-slate-700 border-t mt-8 pt-6">
             <button onclick="handleSaveToNotes()" class="flex items-center font-bold bg-green-600 gap-3 hover:bg-green-500 justify-center px-4 py-4 rounded-lg shadow-lg text-white w-full transition-all" id="btnSave">
                 <span>Save to Notes</span>
@@ -286,17 +272,17 @@
 
 <div id="pdfTemplate" class="pdf-container">
     <div class="pdf-header-row">
-        <img id="pdfLogoImg" class="pdf-logo" alt="VoiceOS" crossorigin="anonymous">
-        
+        <h1 class="pdf-logo-text">VoiceOS</h1>
         <div class="pdf-meta">
             <div id="pdfLeadName" style="font-weight: bold; color:#444;">Lead Name</div>
+            <div id="pdfCompany"></div>
             <div id="pdfDate">Date: --/--/----</div>
             <div id="pdfRefId" style="font-family: monospace; font-size: 12px; margin-top: 4px;">Ref: --</div>
         </div>
     </div>
     
     <div class="pdf-title-row">
-        <h2 class="pdf-doc-title">Configuration Quote</h2>
+        <h2 class="pdf-doc-title" id="pdfDocTitle">Estimate for Client</h2>
     </div>
 
     <div class="pdf-section">Monthly Recurring Charges (MRC)</div>
@@ -327,10 +313,10 @@
     };
     
     const FEES = { newLocalSetup: 1.00, newTFSetup: 2.00, excessDID: 1.00, tfMRC: 1.00, tfBundle: 15.00 };
-    const LOGO_URL = "https://bartow-voiceos.zohosites.com/Logos/PoweredBy_SMALL.png";
 
     let LEAD_ID = "00000";
     let LEAD_NAME = "Lead";
+    let LEAD_COMPANY = "";
     let OVERRIDE_LOCK = false;
     let QUOTE_DATA = { mrc:[], nrc:[] };
 
@@ -351,7 +337,10 @@
             if(l.data) {
                 let d = l.data[0];
                 LEAD_NAME = (d.First_Name ? d.First_Name + " " : "") + d.Last_Name;
+                LEAD_COMPANY = d.Company || "";
+                
                 document.getElementById('recordNameDisplay').innerText = "Lead: " + LEAD_NAME;
+                if(LEAD_COMPANY) document.getElementById('companyDisplay').innerText = LEAD_COMPANY;
             }
             let prod = await ZOHO.CRM.API.getAllRecords({ Entity: "Products", sort_order: "asc", per_page: 200 });
             if(prod.data) updatePrices(prod.data);
@@ -602,7 +591,6 @@
     }
 
     async function downloadPDF() {
-        // 1. Prepare Unique ID
         const dateObj = new Date();
         const dateStr = dateObj.getFullYear() +
                         ('0' + (dateObj.getMonth()+1)).slice(-2) +
@@ -613,9 +601,18 @@
         const uniqueRef = `Ref: ${shortId}${dateStr}`;
         document.getElementById('pdfRefId').innerText = uniqueRef;
 
-        // 2. Prepare Template
         document.getElementById('pdfLeadName').innerText = LEAD_NAME;
+        if(LEAD_COMPANY) document.getElementById('pdfCompany').innerText = LEAD_COMPANY;
         document.getElementById('pdfDate').innerText = "Date: " + new Date().toLocaleDateString();
+        
+        // SET DYNAMIC TITLE
+        let titleText = "Estimate for ";
+        if(LEAD_COMPANY && LEAD_COMPANY.trim() !== "") {
+            titleText += LEAD_COMPANY;
+        } else {
+            titleText += LEAD_NAME;
+        }
+        document.getElementById('pdfDocTitle').innerText = titleText;
         
         const fillTable = (bodyId, items) => {
             document.getElementById(bodyId).innerHTML = items.map(i => `
@@ -632,17 +629,6 @@
         document.getElementById('pdfMrcTotal').innerText = document.getElementById('totalMRC').innerText;
         document.getElementById('pdfNrcTotal').innerText = document.getElementById('totalOTC').innerText;
         
-        // 3. Logo Magic (Pre-fetch to bypass CORS issues if possible)
-        const imgEl = document.getElementById('pdfLogoImg');
-        try {
-             const base64 = await convertImgToBase64(LOGO_URL);
-             imgEl.src = base64; 
-        } catch(e) {
-             console.warn("Logo CORS blocked, using direct URL as fallback");
-             imgEl.src = LOGO_URL;
-        }
-
-        // 4. Generate
         const element = document.getElementById('pdfTemplate');
         const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: true });
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
@@ -652,24 +638,6 @@
         
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`Quote_${LEAD_NAME.replace(/[^a-z0-9]/gi, '_')}.pdf`);
-    }
-
-    // Helper to fetch image data
-    function convertImgToBase64(url) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = 'Anonymous';
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-                resolve(canvas.toDataURL('image/png'));
-            };
-            img.onerror = reject;
-            img.src = url;
-        });
     }
 
     function handleSaveToNotes() {
@@ -683,11 +651,17 @@
             `[MRC ITEMS]\n` + QUOTE_DATA.mrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n') + 
             `\n\n[NRC ITEMS]\n` + QUOTE_DATA.nrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n');
             
-        ZOHO.CRM.API.addRecord({ Entity: "Notes", APIData: { Parent_Id: LEAD_ID, Se_Module: "Leads", Note_Title: "Quote Config", Note_Content: summary } })
+        // FIXED: insertRecord is correct method for embedded SDK
+        ZOHO.CRM.API.insertRecord({ Entity: "Notes", APIData: { Parent_Id: LEAD_ID, Se_Module: "Leads", Note_Title: "Quote Config", Note_Content: summary } })
         .then(() => {
             btn.innerHTML = oldText; btn.disabled = false;
             const fb = document.getElementById('saveFeedback');
             fb.classList.remove('opacity-0'); setTimeout(()=>fb.classList.add('opacity-0'),2000);
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error saving note. See console.");
+            btn.innerHTML = oldText; btn.disabled = false;
         });
     }
 
