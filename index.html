@@ -33,17 +33,14 @@
         
         /* PDF TEMPLATE STYLES */
         .pdf-container { font-family: 'Inter', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
-        
-        /* PDF Header Layout */
         .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
         
-        /* TEXT LOGO REPLACEMENT */
+        /* HEADER TYPOGRAPHY */
         .pdf-logo-text { font-size: 36px; font-weight: 900; color: #0f172a; letter-spacing: -1px; margin: 0; line-height: 1; font-family: 'Inter', sans-serif; }
         
         .pdf-meta { text-align: right; font-size: 14px; color: #555; line-height: 1.6; }
         .pdf-title-row { margin-bottom: 20px; }
         .pdf-doc-title { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
-
         .pdf-section { font-size: 16px; font-weight: bold; margin: 25px 0 10px; color: #444; text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
         .pdf-table { width: 100%; border-collapse: collapse; font-size: 14px; }
         .pdf-th { background: #f8f9fa; color: #555; text-align: left; padding: 8px; border-bottom: 2px solid #ddd; font-weight: 600; }
@@ -605,7 +602,6 @@
         if(LEAD_COMPANY) document.getElementById('pdfCompany').innerText = LEAD_COMPANY;
         document.getElementById('pdfDate').innerText = "Date: " + new Date().toLocaleDateString();
         
-        // SET DYNAMIC TITLE
         let titleText = "Estimate for ";
         if(LEAD_COMPANY && LEAD_COMPANY.trim() !== "") {
             titleText += LEAD_COMPANY;
@@ -651,8 +647,8 @@
             `[MRC ITEMS]\n` + QUOTE_DATA.mrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n') + 
             `\n\n[NRC ITEMS]\n` + QUOTE_DATA.nrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n');
             
-        // FIXED: insertRecord is correct method for embedded SDK
-        ZOHO.CRM.API.insertRecord({ Entity: "Notes", APIData: { Parent_Id: LEAD_ID, Se_Module: "Leads", Note_Title: "Quote Config", Note_Content: summary } })
+        // FIXED: Using addNotes helper method
+        ZOHO.CRM.API.addNotes({ Entity: "Leads", RecordID: LEAD_ID, Title: "Quote Config", Content: summary })
         .then(() => {
             btn.innerHTML = oldText; btn.disabled = false;
             const fb = document.getElementById('saveFeedback');
