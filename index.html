@@ -34,10 +34,7 @@
         /* PDF TEMPLATE STYLES */
         .pdf-container { font-family: 'Inter', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
         .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        
-        /* HEADER TYPOGRAPHY */
         .pdf-logo-text { font-size: 36px; font-weight: 900; color: #0f172a; letter-spacing: -1px; margin: 0; line-height: 1; font-family: 'Inter', sans-serif; }
-        
         .pdf-meta { text-align: right; font-size: 14px; color: #555; line-height: 1.6; }
         .pdf-title-row { margin-bottom: 20px; }
         .pdf-doc-title { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
@@ -51,13 +48,14 @@
         /* OVERLAY LOADER */
         #loader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 9999; text-align: center; padding-top: 250px; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 15px; }
+        #loaderText { font-size: 18px; color: #333; font-weight: 600; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div id="loader">
     <div class="spinner"></div>
-    <div class="text-xl font-bold text-slate-700">Loading Inventory...</div>
+    <div id="loaderText">Loading Inventory...</div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 min-h-screen text-slate-600">
@@ -257,13 +255,11 @@
             </div>
         </div>
         <div class="border-slate-700 border-t mt-8 pt-6">
-            <button onclick="handleSaveToNotes()" class="flex items-center font-bold bg-green-600 gap-3 hover:bg-green-500 justify-center px-4 py-4 rounded-lg shadow-lg text-white w-full transition-all" id="btnSave">
-                <span>Save to Notes</span>
-                <span class="text-xl">&#43;</span>
+            <button onclick="handleSaveAndDownload()" class="flex items-center font-bold bg-green-600 gap-3 hover:bg-green-500 justify-center px-4 py-4 rounded-lg shadow-lg text-white w-full transition-all" id="btnAction">
+                <span>Save Quote & Download PDF</span>
+                <span class="text-xl">&#8594;</span>
             </button>
-            <button onclick="downloadPDF()" class="w-full mt-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded text-xs uppercase" id="btnPdf">Download PDF</button>
         </div>
-        <div class="text-center mt-2 text-xs text-green-400 opacity-0 transition-opacity" id="saveFeedback">Saved Successfully!</div>
     </div>
 </div>
 
@@ -425,7 +421,8 @@
     function overrideLock() {
         OVERRIDE_LOCK = true;
         document.getElementById('licenseError').classList.add('hidden');
-        toggleButtons(true);
+        document.getElementById('btnAction').disabled = false;
+        document.getElementById('btnAction').classList.remove('opacity-50','cursor-not-allowed');
     }
 
     // --- CALCULATOR ---
@@ -556,25 +553,18 @@
         renderSummaryList('otcList', QUOTE_DATA.nrc);
         
         const totalSeats = std + adv + cc;
+        const btn = document.getElementById('btnAction');
         if(!OVERRIDE_LOCK && totalPhones > totalSeats) {
             document.getElementById('licenseError').classList.remove('hidden');
             document.getElementById('errEndCount').innerText = totalPhones;
             document.getElementById('errLicCount').innerText = totalSeats;
-            toggleButtons(false);
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
         } else {
             document.getElementById('licenseError').classList.add('hidden');
-            toggleButtons(true);
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
-    }
-
-    function toggleButtons(enable) {
-        const ids = ['btnSave', 'btnPdf'];
-        ids.forEach(id => {
-            const btn = document.getElementById(id);
-            btn.disabled = !enable;
-            if(enable) btn.classList.remove('opacity-50', 'cursor-not-allowed');
-            else btn.classList.add('opacity-50', 'cursor-not-allowed');
-        });
     }
 
     function renderSummaryList(id, items) {
@@ -587,7 +577,50 @@
         document.getElementById(id).innerHTML = html || '<div class="text-sm italic text-slate-600">No items...</div>';
     }
 
-    async function downloadPDF() {
+    async function handleSaveAndDownload() {
+        const btn = document.getElementById('btnAction');
+        const oldText = btn.innerHTML;
+        btn.innerHTML = `<span>Processing...</span>`;
+        btn.disabled = true;
+        showLoader(true);
+
+        try {
+            // 1. GENERATE SUMMARY STRING
+            const summary = `VOICEOS CONFIG - ${new Date().toLocaleDateString()}\n--------------------------------\n` +
+                `MRC TOTAL: ${document.getElementById('totalMRC').innerText}\n` +
+                `OTC TOTAL: ${document.getElementById('totalOTC').innerText}\n\n` +
+                `[MRC ITEMS]\n` + QUOTE_DATA.mrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n') + 
+                `\n\n[NRC ITEMS]\n` + QUOTE_DATA.nrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n');
+
+            // 2. SAVE NOTE (Using addNotes)
+            await ZOHO.CRM.API.addNotes({ 
+                Entity: "Leads", 
+                RecordID: LEAD_ID, 
+                Title: "Quote Config", 
+                Content: summary 
+            });
+
+            // 3. GENERATE & DOWNLOAD PDF
+            document.getElementById('loaderText').innerText = "Generating PDF...";
+            await generateAndDownloadPDF();
+
+            // 4. CLOSE
+            document.getElementById('loaderText').innerText = "Done!";
+            setTimeout(() => {
+                ZOHO.CRM.UI.Popup.close();
+            }, 1500); // Give chrome a moment to initiate download
+
+        } catch (error) {
+            console.error(error);
+            alert("Error: " + error.message);
+            btn.innerHTML = oldText;
+            btn.disabled = false;
+            showLoader(false);
+        }
+    }
+
+    async function generateAndDownloadPDF() {
+        // Setup Template
         const dateObj = new Date();
         const dateStr = dateObj.getFullYear() +
                         ('0' + (dateObj.getMonth()+1)).slice(-2) +
@@ -634,31 +667,6 @@
         
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`Quote_${LEAD_NAME.replace(/[^a-z0-9]/gi, '_')}.pdf`);
-    }
-
-    function handleSaveToNotes() {
-        const btn = document.getElementById('btnSave');
-        const oldText = btn.innerHTML;
-        btn.innerText = "Saving..."; btn.disabled = true;
-        
-        const summary = `VOICEOS CONFIG - ${new Date().toLocaleDateString()}\n--------------------------------\n` +
-            `MRC TOTAL: ${document.getElementById('totalMRC').innerText}\n` +
-            `OTC TOTAL: ${document.getElementById('totalOTC').innerText}\n\n` +
-            `[MRC ITEMS]\n` + QUOTE_DATA.mrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n') + 
-            `\n\n[NRC ITEMS]\n` + QUOTE_DATA.nrc.map(i => `- ${i.qty}x ${i.name} @ $${i.rate}`).join('\n');
-            
-        // FIXED: Using addNotes helper method
-        ZOHO.CRM.API.addNotes({ Entity: "Leads", RecordID: LEAD_ID, Title: "Quote Config", Content: summary })
-        .then(() => {
-            btn.innerHTML = oldText; btn.disabled = false;
-            const fb = document.getElementById('saveFeedback');
-            fb.classList.remove('opacity-0'); setTimeout(()=>fb.classList.add('opacity-0'),2000);
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Error saving note. See console.");
-            btn.innerHTML = oldText; btn.disabled = false;
-        });
     }
 
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
