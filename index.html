@@ -35,9 +35,9 @@
         .pdf-container { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; padding: 40px; width: 900px; color: #333; position: absolute; top: -9999px; left: -9999px; }
         
         /* PDF Header Layout */
-        .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .pdf-logo { height: 45px; width: auto; display: block; }
-        .pdf-meta { text-align: right; font-size: 14px; color: #777; line-height: 1.5; }
+        .pdf-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
+        .pdf-logo { height: 50px; width: auto; display: block; object-fit: contain; }
+        .pdf-meta { text-align: right; font-size: 14px; color: #555; line-height: 1.6; }
         .pdf-title-row { margin-bottom: 20px; }
         .pdf-doc-title { font-size: 24px; font-weight: 800; color: #2c3e50; margin: 0; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -286,11 +286,12 @@
 
 <div id="pdfTemplate" class="pdf-container">
     <div class="pdf-header-row">
-        <img src="https://bartow-voiceos.zohosites.com/Logos/PoweredBy_SMALL.png" class="pdf-logo" alt="VoiceOS" crossorigin="anonymous">
+        <img id="pdfLogoImg" class="pdf-logo" alt="VoiceOS" crossorigin="anonymous">
         
         <div class="pdf-meta">
             <div id="pdfLeadName" style="font-weight: bold; color:#444;">Lead Name</div>
             <div id="pdfDate">Date: --/--/----</div>
+            <div id="pdfRefId" style="font-family: monospace; font-size: 12px; margin-top: 4px;">Ref: --</div>
         </div>
     </div>
     
@@ -316,27 +317,19 @@
 <script>
     // --- STATE ---
     let PRICES = { 
-        // Defaults, overwritten by Inventory
         stdUser:21, stdSetup:12, advUser:29, advSetup:14, ccAgent:55, ccSetup:25,
         potsLine:32, potsSetup:126, ata:45,
         webfax:14, webfaxSetup:14,
         paging:32, pagingSetup:126, pagingSurvey:169,
         hwBasic:139, hwOffice:165, hwExec:205, hwConf:630, hwCordlessBase:129, hwCordlessHandset:129,
         hwWallMount:10, hwPowerSupply:15, sidecar:125, sidecarPSU:15,
-        deployHourly:200,
-        sipChannel:24.99, sipSetup:15
+        deployHourly:200, sipChannel:24.99, sipSetup:15
     };
     
-    // Constants for Specific Logic
-    const FEES = {
-        newLocalSetup: 1.00,
-        newTFSetup: 2.00,
-        excessDID: 1.00,
-        tfMRC: 1.00,
-        tfBundle: 15.00
-    };
+    const FEES = { newLocalSetup: 1.00, newTFSetup: 2.00, excessDID: 1.00, tfMRC: 1.00, tfBundle: 15.00 };
+    const LOGO_URL = "https://bartow-voiceos.zohosites.com/Logos/PoweredBy_SMALL.png";
 
-    let LEAD_ID = null;
+    let LEAD_ID = "00000";
     let LEAD_NAME = "Lead";
     let OVERRIDE_LOCK = false;
     let QUOTE_DATA = { mrc:[], nrc:[] };
@@ -360,7 +353,6 @@
                 LEAD_NAME = (d.First_Name ? d.First_Name + " " : "") + d.Last_Name;
                 document.getElementById('recordNameDisplay').innerText = "Lead: " + LEAD_NAME;
             }
-            
             let prod = await ZOHO.CRM.API.getAllRecords({ Entity: "Products", sort_order: "asc", per_page: 200 });
             if(prod.data) updatePrices(prod.data);
         } catch(e){ console.error(e); }
@@ -386,23 +378,19 @@
         if(p=get(null,null,'Onboarding_VoiceOS-ADV')) { PRICES.advSetup=p; PRICES.webfaxSetup=p; }
         if(p=get('VoiceOS','VoiceOS CC')) PRICES.ccAgent=p;
         if(p=get(null,null,'Onboarding_VoiceOS-CC')) PRICES.ccSetup=p;
-        
         if(p=get('Standard Phones')) PRICES.hwBasic=p;
         if(p=get('Office Phones')) PRICES.hwOffice=p;
         if(p=get('Executive Phones')) PRICES.hwExec=p;
         if(p=get('Conference Phones')) PRICES.hwConf=p;
         if(p=get('Cordless Phones','Cordless Base')) PRICES.hwCordlessBase=p;
         if(p=get('Cordless Phones','Cordless Handset')) PRICES.hwCordlessHandset=p;
-        
         if(p=get('Phone Misc','Wall Mount')) PRICES.hwWallMount=p;
         if(p=get('Phone Misc','Power Supply')) PRICES.hwPowerSupply=p;
         if(p=get('Phone Misc','Sidecar')) PRICES.sidecar=p;
-        
         if(p=get(null,null,'AMP_PS_STD_FC')) PRICES.deployHourly=p;
         if(p=get(null,null,'AMP_PS_SVY_FC')) PRICES.pagingSurvey=p;
         if(p=get(null,null,'Onboarding_VoiceOS-POTS')) PRICES.potsSetup=p;
         
-        // Refresh UI Text
         setText('price_stdUser', `$${PRICES.stdUser}/mo`);
         setText('price_advUser', `$${PRICES.advUser}/mo`);
         setText('price_ccAgent', `$${PRICES.ccAgent}/mo`);
@@ -426,7 +414,6 @@
         calculateTotals();
     });
     document.getElementById('customerPoE').addEventListener('change', updatePowerSupplies);
-    
     document.querySelectorAll('.acc-validate').forEach(el => el.addEventListener('input', (e) => {
         const max = val(e.target.dataset.parent);
         if(val(e.target.id) > max) e.target.value = max;
@@ -452,13 +439,10 @@
     function overrideLock() {
         OVERRIDE_LOCK = true;
         document.getElementById('licenseError').classList.add('hidden');
-        document.getElementById('btnSave').disabled = false;
-        document.getElementById('btnPdf').disabled = false;
-        document.getElementById('btnSave').classList.remove('opacity-50','cursor-not-allowed');
-        document.getElementById('btnPdf').classList.remove('opacity-50','cursor-not-allowed');
+        toggleButtons(true);
     }
 
-    // --- CORE LOGIC ---
+    // --- CALCULATOR ---
     function calculateTotals() {
         QUOTE_DATA = { mrc: [], nrc: [] };
         let mrcT = 0, nrcT = 0;
@@ -474,7 +458,6 @@
             QUOTE_DATA.nrc.push({ name, qty, rate, total: qty*rate });
         };
 
-        // 1. Licenses & Setup
         const std = val('standardUsers');
         addMrc('Standard User', std, PRICES.stdUser); addNrc('Setup: Standard User', std, PRICES.stdSetup);
         
@@ -484,11 +467,10 @@
         const cc = val('ccAgents');
         addMrc('CC Agent', cc, PRICES.ccAgent); addNrc('Setup: CC Agent', cc, PRICES.ccSetup);
 
-        // 2. Analog / Other Seats
         const webfax = val('efaxQty');
         addMrc('Webfax', webfax, PRICES.webfax); addNrc('Setup: Webfax', webfax, PRICES.webfaxSetup);
         
-        const pots = val('physicalFaxQty'); // POTS Replacement
+        const pots = val('physicalFaxQty'); 
         if(pots > 0) {
             addMrc('POTS Replacement', pots, PRICES.potsLine);
             addNrc('Setup: POTS Rep', pots, PRICES.potsSetup);
@@ -497,48 +479,36 @@
         
         const paging = val('pagingQty');
         if(paging > 0) {
-            addMrc('Paging/Analog Ext', paging, PRICES.potsLine); // Assume same rate
-            addNrc('Setup: Paging', paging, PRICES.pagingSetup); // Assume same setup
+            addMrc('Paging/Analog Ext', paging, PRICES.potsLine); 
+            addNrc('Setup: Paging', paging, PRICES.pagingSetup); 
             addNrc('ATA Device', paging, PRICES.ata);
         }
 
-        // 3. Entitlements Calculation
         const totalEntitlements = std + adv + cc + webfax + pots + paging;
-        
-        const portL = val('portLocal');
-        const newL = val('newLocal');
-        const totalLocal = portL + newL;
+        const totalLocal = val('portLocal') + val('newLocal');
         
         const freeLocal = Math.min(totalLocal, totalEntitlements);
         const billableLocal = Math.max(0, totalLocal - totalEntitlements);
         
-        // Add Local DIDs
         if(freeLocal > 0) addMrc('Local DID (Included)', freeLocal, 0, true);
         if(billableLocal > 0) addMrc('Local DID (Excess)', billableLocal, FEES.excessDID);
         
-        // Setup for New Local
-        if(newL > 0) addNrc('New DID Activation', newL, FEES.newLocalSetup);
+        if(val('newLocal') > 0) addNrc('New DID Activation', val('newLocal'), FEES.newLocalSetup);
         
-        // Toll Free (Always Billable)
-        const portT = val('portTF');
-        const newT = val('newTF');
-        const totalTF = portT + newT;
-        
+        const totalTF = val('portTF') + val('newTF');
         if(totalTF > 0) addMrc('Toll-Free Number', totalTF, FEES.tfMRC);
-        if(newT > 0) addNrc('New TF Activation', newT, FEES.newTFSetup);
+        if(val('newTF') > 0) addNrc('New TF Activation', val('newTF'), FEES.newTFSetup);
         
-        // TF Bundle
         if(totalTF > 0 && val('tfMinutes') > 0) {
             const bundles = Math.ceil(val('tfMinutes') / 500);
             addMrc('Toll-Free Minutes Bundle', bundles, FEES.tfBundle);
         }
 
-        // 4. Hardware
         addNrc('Basic Phone', val('hwBasic'), PRICES.hwBasic);
         addNrc('Office Phone', val('hwOffice'), PRICES.hwOffice);
         addNrc('Exec Phone', val('hwExec'), PRICES.hwExec);
         addNrc('Conf Phone', val('hwConf'), PRICES.hwConf);
-        addNrc('Exp Mics', val('hwConfMics'), 220); // Fixed price fallback
+        addNrc('Exp Mics', val('hwConfMics'), 220);
         addNrc('Headsets', val('hwHeadsets'), 185);
         
         const cord = val('hwCordless');
@@ -558,10 +528,9 @@
         const side = val('sidecars');
         if(side > 0) {
             addNrc('Sidecar', side, PRICES.sidecar);
-            addNrc('Sidecar PSU', side, PRICES.sidecarPSU); // 1 per sidecar
+            addNrc('Sidecar PSU', side, PRICES.sidecarPSU);
         }
 
-        // 5. Deployment
         const totalPhones = val('hwBasic')+val('hwOffice')+val('hwExec')+val('hwConf')+val('hwCordless');
         const totalATAs = pots + paging;
         const totalDevices = totalPhones + totalATAs + side;
@@ -570,9 +539,8 @@
         
         const installCb = document.getElementById('includeInstall');
         const installStatus = document.getElementById('installStatus');
-        const hasMandatoryInstall = (totalATAs > 0);
         
-        if(hasMandatoryInstall) {
+        if(totalATAs > 0) {
             installCb.checked = true; installCb.disabled = true;
             installStatus.innerText = "MANDATORY (ATA)"; installStatus.className = "text-[10px] font-bold text-orange-500";
         } else {
@@ -590,20 +558,17 @@
         
         if(paging > 0) addNrc('Site Survey', 1, PRICES.pagingSurvey);
         
-        // SIP
         if(document.getElementById('sipTrunkingToggle').checked) {
             addMrc('SIP Channel', val('sipChannels'), PRICES.sipChannel);
             addNrc('SIP Activation', 1, PRICES.sipSetup);
         }
 
-        // RENDER UI
         document.getElementById('totalMRC').innerText = `$${mrcT.toFixed(2)}`;
         document.getElementById('totalOTC').innerText = `$${nrcT.toFixed(2)}`;
         
         renderSummaryList('mrcList', QUOTE_DATA.mrc);
         renderSummaryList('otcList', QUOTE_DATA.nrc);
         
-        // CHECK LOCK
         const totalSeats = std + adv + cc;
         if(!OVERRIDE_LOCK && totalPhones > totalSeats) {
             document.getElementById('licenseError').classList.remove('hidden');
@@ -636,12 +601,24 @@
         document.getElementById(id).innerHTML = html || '<div class="text-sm italic text-slate-600">No items...</div>';
     }
 
-    // --- GENERATORS ---
     async function downloadPDF() {
-        // Populate Hidden Template
+        // 1. Prepare Unique ID
+        const dateObj = new Date();
+        const dateStr = dateObj.getFullYear() +
+                        ('0' + (dateObj.getMonth()+1)).slice(-2) +
+                        ('0' + dateObj.getDate()).slice(-2) +
+                        ('0' + dateObj.getHours()).slice(-2) +
+                        ('0' + dateObj.getMinutes()).slice(-2);
+        const shortId = (LEAD_ID || "00000").slice(-5);
+        const uniqueRef = `Ref: ${shortId}${dateStr}`;
+        document.getElementById('pdfRefId').innerText = uniqueRef;
+
+        // 2. Prepare Template
+        document.getElementById('pdfLeadName').innerText = LEAD_NAME;
+        document.getElementById('pdfDate').innerText = "Date: " + new Date().toLocaleDateString();
+        
         const fillTable = (bodyId, items) => {
-            const tbody = document.getElementById(bodyId);
-            tbody.innerHTML = items.map(i => `
+            document.getElementById(bodyId).innerHTML = items.map(i => `
                 <tr>
                     <td class="pdf-td">${i.name}${i.entitlement ? "<span class='badge-inc'>Included</span>" : ""}</td>
                     <td class="pdf-td" style="text-align:center">${i.qty}</td>
@@ -650,17 +627,22 @@
                 </tr>
             `).join('');
         };
-        
-        document.getElementById('pdfLeadName').innerText = LEAD_NAME;
-        document.getElementById('pdfDate').innerText = "Date: " + new Date().toLocaleDateString();
-        
         fillTable('pdfMrcBody', QUOTE_DATA.mrc);
         fillTable('pdfNrcBody', QUOTE_DATA.nrc);
-        
         document.getElementById('pdfMrcTotal').innerText = document.getElementById('totalMRC').innerText;
         document.getElementById('pdfNrcTotal').innerText = document.getElementById('totalOTC').innerText;
         
-        // Generate with CORS enabled for the logo
+        // 3. Logo Magic (Pre-fetch to bypass CORS issues if possible)
+        const imgEl = document.getElementById('pdfLogoImg');
+        try {
+             const base64 = await convertImgToBase64(LOGO_URL);
+             imgEl.src = base64; 
+        } catch(e) {
+             console.warn("Logo CORS blocked, using direct URL as fallback");
+             imgEl.src = LOGO_URL;
+        }
+
+        // 4. Generate
         const element = document.getElementById('pdfTemplate');
         const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: true });
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
@@ -671,7 +653,25 @@
         pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
         pdf.save(`Quote_${LEAD_NAME.replace(/[^a-z0-9]/gi, '_')}.pdf`);
     }
-    
+
+    // Helper to fetch image data
+    function convertImgToBase64(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/png'));
+            };
+            img.onerror = reject;
+            img.src = url;
+        });
+    }
+
     function handleSaveToNotes() {
         const btn = document.getElementById('btnSave');
         const oldText = btn.innerHTML;
@@ -691,11 +691,9 @@
         });
     }
 
-    // Utils
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
     function setText(id, t) { if(document.getElementById(id)) document.getElementById(id).innerText = t; }
     function showLoader(s) { document.getElementById('loader').style.display = s?'block':'none'; }
-
 </script>
 </body>
 </html>
